@@ -3,12 +3,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
-    mode: 'production',
     entry: './src/index.js',
     output: {
         filename: 'main.js',
         path: path.resolve(__dirname, 'dist'),
-        publicPath: './',
     },
     module: {
         rules: [
@@ -41,15 +39,6 @@ module.exports = {
             },
         ],
     },
-    devtool: 'source-map',
-    devServer: {
-        contentBase: './dist',
-        compress: true,
-        hot: true,
-        open: true,
-        port: 8080,
-        historyApiFallback: true,
-    },
     plugins: [
         new MiniCssExtractPlugin({
             filename: '[name].css',
@@ -57,7 +46,7 @@ module.exports = {
         }),
 
         new HtmlWebpackPlugin({
-            title: 'Html App',
+            title: 'News App',
             template: path.resolve(__dirname, './src/index.html'),
             inject: true,
             filename: './index.html',
