@@ -40,8 +40,13 @@ h1 {
 .view{
     height: 100%;
     display: flex;
-    justify-content: flex-start;
-    align-items: center;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+.view__textContent{
+    display: block;
 }
 
 .view__text--color {
