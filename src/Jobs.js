@@ -1,11 +1,23 @@
 export class Jobs {
     constructor(){
-        this.fetchedData
+        this.APP_ID = 07300533;
+        this.APP_KEY = 'fadda830981b47b9ef3e023f82b349ca';
+        this.URL = `https://api.adzuna.com/v1/api/jobs/pl/search/1?app_id=${this.APP_ID}&app_key=${this.APP_KEY}`;
+        this.fetchedData;
 
+        try{
+            fetchingData(this.URL);
+            this.fetchedData = data
+            console.log(data)
+        } catch {
+            console.log(error)
+        }
     }
 
-    fetchingData(params) {
-        
+    async fetchingData(url) {
+        const response = await fetch(url);
+        const data = await response.json()
+        return data
     }
 }
 
