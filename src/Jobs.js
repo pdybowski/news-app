@@ -11,11 +11,15 @@ export class Jobs {
             console.log(data)
         } catch {
             console.log(error)
-        }
+        } 
     }
 
     async fetchingData(url) {
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            headers: {
+              'Content-Type': 'application/json'
+            },
+          });
         const data = await response.json()
         return data
     }
