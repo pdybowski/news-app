@@ -11,33 +11,35 @@ export class Home {
     };
 
     _createContent() {
-        const mainContainer = document.createElement('div');
-        const header = document.createElement('h1');
-        const content = document.createElement('p');
+        this.mainContainer = document.createElement('div');
+        this.header = document.createElement('h1');
 
-        this.mainContainer.className.add("view container-lg");
-        this.header.className.add("view__header view__text--color h1");
-        this.content.className.add("view__textContent view__text--color display-6");
+        this.mainContainer.classList.add("view", "container-lg");
+        this.header.classList.add("view__header", "view__text--color", "h1");
+        this.header.innerText = "Cześć 👋🏼 Dobrze Cię widzieć.";
 
-        this.viewElement.appendChild(mainContainer);
-        this.viewElement.appendChild(header);
-        this.viewElement.appendChild(content);
+        this.mainContainer.appendChild(this.header);
+        this.viewElement.appendChild(this.mainContainer);
+    }
 
-        return this.mainContainer;
+    _createTimeText(){
+        this.content = document.createElement('p');
+        this.content.classList.add("view__textContent", "view__text--color", "display-6");
+        this.mainContainer.appendChild(this.content);
     }
 
     _timer() {
+        this._createTimeText()
+
         setInterval(() => {
             this.fullDate = new Date();
             this.day = String(this.fullDate.getDate()).padStart(2, '0');
-            this.month = String(this.fullDate.getMonth()).padStart(2, '0');
+            this.month = String(this.fullDate.getMonth()+1).padStart(2, '0');
             this.year = this.fullDate.getFullYear();
             this.hour = String(this.fullDate.getHours()).padStart(2, '0');
             this.minutes = String(this.fullDate.getMinutes()).padStart(2, '0');
             this.sec = String(this.fullDate.getSeconds()).padStart(2, '0');
-            this.mainContainer.innerText = `Dziś jest ${this.day}.${this.month}.${this.year}r. \n Godzina ${this.hour}:${this.minutes}:${this.sec}`;
+            this.content.innerText = `Dziś jest ${this.day}.${this.month}.${this.year}r. \n Godzina ${this.hour}:${this.minutes}:${this.sec}`;
         }, 1000);
     }
 };
-
-export default Home
