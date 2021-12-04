@@ -6,6 +6,10 @@ export class Home {
     };
 
     start() {
+       this._timer()
+    };
+
+    _timer() {
         setInterval(() => {
             this.fullDate = new Date();
             this.day = String(this.fullDate.getDate()).padStart(2, '0');
@@ -16,8 +20,7 @@ export class Home {
             this.sec = this.fullDate.getSeconds();
             this.textElement.innerText = `Dziś jest ${this.day}.${this.month}.${this.year}r. \n Godzina ${this.hour}:${this.minutes}:${this.sec}`;
         }, 1000);
-    };
-
+    }
 };
 
 export default Home
