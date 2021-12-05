@@ -33,7 +33,7 @@ export class Health {
 
         searchForm.setAttribute('class', 'search-form');
         inputLocation.setAttribute('class', 'input-location');
-        searchLocation.setAttribute('class', 'btn btn-dark');
+        searchLocation.setAttribute('class', 'health-btn btn-dark');
 
         searchLocation.innerText = 'Search';
         // inputLocation.innerHTML = 'nnnn'; // nie działa, trzeba inaczej
