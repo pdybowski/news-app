@@ -1,0 +1,75 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-image: url('content/health_background.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: left;
+}
+
+.title {
+    padding-top: 40px;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.subtitle {
+    font-size: 20px;
+}
+
+.title,
+.subtitle,
+.search-form,
+.serach-result {
+    display: flex;
+    justify-content: left;
+    align-items: left;
+}
+
+.search-form {
+    margin: 10px 0;
+}
+
+.btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.input-location {
+    height: 30px;
+    width: 300px;
+    border: 1.5px solid black;
+    border-radius: 4px;
+    background-color: rgb(189, 198, 235);
+    margin-right: 5px;
+}
+
+.btn {
+    height: 30px;
+    width: 100px;
+    color: rgb(189, 198, 235);
+}
+
+.search-result {
+    height: 40vh;
+    width: 405px;
+    border-radius: 3px;
+    background-color: rgb(204, 212, 241);
+    opacity: 0.8;
+    padding-top: 40px;
+}
+
+.search-result > p {
+    margin-left: 30px;
+    color: black;
+}
+
+.country {
+    font-size: 30px;
+    font-weight: 700;
+}
