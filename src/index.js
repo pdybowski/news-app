@@ -1,4 +1,4 @@
-const mainBox = document.querySelector('#main');
+/*const mainBox = document.querySelector('#main');
 
 const buttonsContainer = document.createElement('div');
 buttonsContainer.className = 'buttons';
@@ -18,9 +18,9 @@ const season = document.createElement('button');
 season.className = 'area__name';
 season.innerHTML = '2021/2022';
 
-buttonsContainer.appendChild(season);
+buttonsContainer.appendChild(season); */
 
-/*export class Sport {
+export class Sport {
     constructor() {
         this.mainBox = document.querySelector('#main');
         this.start();
@@ -52,4 +52,4 @@ _createButtons() {
     season.className = 'area__name';
     season.innerHTML = '2021/2022';
     buttonsContainer.appendChild(season);
-}*/
+}
