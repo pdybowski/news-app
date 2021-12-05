@@ -1,4 +1,6 @@
 import './content/styles/index.css';
-import { Home } from './modules';
+import { Home, Weather } from './modules';
 
 document.addEventListener('DOMContentLoaded', () => new Home());
+
+new Weather();
