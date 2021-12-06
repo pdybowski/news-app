@@ -1,0 +1,55 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    margin: 0;
+}
+
+.wrapper {
+    width: 100vw;
+    height: 100vh;
+
+    background-image: url('../img/catalin-sandru-unsplash.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.wrapper--transparency {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+#main {
+    /* Someone should chenge x into navbar height in pixels;  */
+    /* min-height: calc(100vh - x); */
+    height: 100vh;
+}
+
+.view {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+.view__textContent {
+    display: block;
+}
+
+.view__text--color {
+    color: #ffffff;
+}

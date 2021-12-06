@@ -1,3 +1,4 @@
-import { News } from './modules';
+import './content/styles/index.css';
+import { Home } from './modules';
 
-new News();
+document.addEventListener('DOMContentLoaded', () => new Home());
