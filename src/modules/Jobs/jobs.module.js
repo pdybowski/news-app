@@ -11,26 +11,28 @@ export class Jobs {
     _render(){
         fetch(this.URL)
         .then(response => response.json())
-        .then(data => this.fetchedData = data.results)
+        .then(data => this._start(data.results))
         .catch(error => this.fetchError = error);
-    
-        this._start(this.fetchedData)
     }
 
     
     _start(data){
-        this._createJobHeader('h2', 'Job opportunities');
+        this._createHeader('h2', 'Job opportunities');
         this._createJobText('Check out the latest jobs in your area!');
         // this._createJobItems();
+        const jobOffers = data
+        console.log(jobOffers)
 
-        for (item of data){
-            return <h1>{item}</h1>
+        for(const jobOffer of jobOffers){
+            const h1 = document.createElement('p');
+            h1.innerText = jobOffer.id;
+            this.viewElement.appendChild(h1)
         }
     }
 
     _createJobItems(title, company, min, max, link){
         const itemContainer = document.createElement('div');
-        const JobTitle = this._createJobHeader('h4', title);
+        const JobTitle = this._createHeader('h4', title);
         const companyName = this._createJobText(company);
         const salaryRange = this._createSalaryBox(min, max)
         const button =  _createButton(link)
