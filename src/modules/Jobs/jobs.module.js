@@ -53,6 +53,14 @@ export class Jobs {
         this.viewElement.appendChild(jobSectionDescription)
     }
 
+    _createSalaryBox(minSalaryRange, maxSalaryRange){
+        const salaryBox = document.createElement('div');
+        const salaryRangeInfo = document.createElement('span');
+
+        salaryRangeInfo.innerText = `Min. Salary: ${minSalaryRange} || Max. Salary: ${maxSalaryRange}`
+        // output 
+    }
+
     _createButton(){
         const jobButton = document.createElement('button');
         jobButton.classList.add('jobs--button')
