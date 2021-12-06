@@ -16,7 +16,7 @@ export class Home {
 
         this.mainContainer.classList.add("view", "container-lg");
         this.header.classList.add("view__header", "view__text--color", "h1");
-        this.header.innerText = "Cześć 👋🏼 Dobrze Cię widzieć.";
+        this.header.innerText = "Hi 👋🏼 It's good to see you here!";
 
         this.mainContainer.appendChild(this.header);
         this.viewElement.appendChild(this.mainContainer);
@@ -39,7 +39,7 @@ export class Home {
             this.hour = String(this.fullDate.getHours()).padStart(2, '0');
             this.minutes = String(this.fullDate.getMinutes()).padStart(2, '0');
             this.sec = String(this.fullDate.getSeconds()).padStart(2, '0');
-            this.content.innerText = `Dziś jest ${this.day}.${this.month}.${this.year}r. \n Godzina ${this.hour}:${this.minutes}:${this.sec}`;
+            this.content.innerText = `Today is ${this.day}.${this.month}.${this.year} \n Hour: ${this.hour}:${this.minutes}:${this.sec}`;
         }, 1000);
     }
 };
