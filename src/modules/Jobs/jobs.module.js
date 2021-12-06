@@ -26,30 +26,36 @@ export class Jobs {
         const data = await response.json()
         return data
     }
-
-    _createJobItem(){
-        const itemContainer = document.createElement('div');
-        const additionalInfo = document.createElement('span');
-
-        itemContainer.appendChild(itemHeader);
-        itemContainer.appendChild(additionalInfo);
-        itemContainer.appendChild(shortDescription);
+    
+    _start(){
+        this._createJobHeader('h2');
+        this._createJobDescription();
+        this._createJobItems();
     }
 
-    _createJobHeader(){
-        const itemHeader = document.createElement('h4');
-        itemHeader.classList.add('jobs--header')
-        itemHeader.innerText = 'Job opportunities';
+    _createJobItems(title, ){
+        const itemContainer = document.createElement('div');
+        
+    }
 
-        return itemHeader
+    _createHeader(typeOfHeader){
+        const sectionHeader = document.createElement(typeOfHeader);
+        sectionHeader.classList.add('jobs--header')
+        sectionHeader.innerText = 'Job opportunities';
+        this.viewElement.appendChild(sectionHeader)
     }
 
     _createJobDescription(){
-        const shortDescription = document.createElement('p');
-        shortDescription.classList.add('jobs--description')
-        shortDescription.innerText = 'Check out the latest jobs in your area!';
+        const jobSectionDescription = document.createElement('p');
+        jobSectionDescription.classList.add('jobs--description')
+        jobSectionDescription.innerText = 'Check out the latest jobs in your area!';
+        this.viewElement.appendChild(jobSectionDescription)
+    }
 
-        return shortDescription
+    _createButton(){
+        const jobButton = document.createElement('button');
+        jobButton.classList.add('jobs--button')
+        jobButton.innerText = 'Show more';
     }
 }
 
