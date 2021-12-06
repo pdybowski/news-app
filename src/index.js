@@ -1,3 +1,4 @@
-import { Health } from './modules/health.js'
+import './content/styles/index.css';
+import { Home } from './modules';
 
-new Health();
+document.addEventListener('DOMContentLoaded', () => new Home());
