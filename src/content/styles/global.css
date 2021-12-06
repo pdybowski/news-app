@@ -34,7 +34,8 @@ h1 {
 
 #main {
     /* Someone should chenge x into navbar height in pixels;  */
-    /* min-height: calc(100% - x); */
+    /* min-height: calc(100vh - x); */
+    height: 100vh;
 }
 
 .view {
