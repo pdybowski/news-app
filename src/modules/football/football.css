@@ -1,4 +1,4 @@
-button {
+.buttons {
     padding: 20px 40px;
     margin: 20px;
     cursor: pointer;
@@ -10,11 +10,8 @@ button {
     transition: 0.3s;
     text-transform: uppercase;
 }
-.find {
-    background: rgb(163, 148, 148);
-}
 
-button:hover {
+.buttons:hover {
     background-color: #ddd;
     color: #000;
 }
