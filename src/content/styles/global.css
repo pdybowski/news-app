@@ -18,7 +18,7 @@ h1 {
     width: 100vw;
     height: 100vh;
 
-    background-image: url('./images/catalin-sandru-unsplash.jpg');
+    background-image: url('../img/catalin-sandru-unsplash.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -32,12 +32,12 @@ h1 {
     background-color: rgba(0, 0, 0, 0.15);
 }
 
-#main{
+#main {
     /* Someone should chenge x into navbar height in pixels;  */
     /* min-height: calc(100% - x); */
 }
 
-.view{
+.view {
     height: 100%;
     display: flex;
     justify-content: center;
@@ -45,7 +45,7 @@ h1 {
     flex-direction: column;
 }
 
-.view__textContent{
+.view__textContent {
     display: block;
 }
 
