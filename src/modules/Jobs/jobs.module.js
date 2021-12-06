@@ -29,13 +29,27 @@ export class Jobs {
 
     _createJobItem(){
         const itemContainer = document.createElement('div');
-        const itemHeader = document.createElement('h4');
         const additionalInfo = document.createElement('span');
-        const shortDescription = document.createElement('p');
 
         itemContainer.appendChild(itemHeader);
         itemContainer.appendChild(additionalInfo);
         itemContainer.appendChild(shortDescription);
+    }
+
+    _createJobHeader(){
+        const itemHeader = document.createElement('h4');
+        itemHeader.classList.add('jobs--header')
+        itemHeader.innerText = 'Job opportunities';
+
+        return itemHeader
+    }
+
+    _createJobDescription(){
+        const shortDescription = document.createElement('p');
+        shortDescription.classList.add('jobs--description')
+        shortDescription.innerText = 'Check out the latest jobs in your area!';
+
+        return shortDescription
     }
 }
 
