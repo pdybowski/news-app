@@ -14,9 +14,9 @@ export class Home {
         this.mainContainer = document.createElement('div');
         this.header = document.createElement('h1');
 
-        this.mainContainer.classList.add("view", "container-lg");
-        this.header.classList.add("view__header", "view__text--color", "h1");
-        this.header.innerText = "Hi 👋🏼 It's good to see you here!";
+        this.mainContainer.classList.add('view', 'container-lg');
+        this.header.classList.add('view__header', 'view__text--color', 'h1');
+        this.header.innerText = `Hi 👋🏼 It's good to see you here!`;
 
         this.mainContainer.appendChild(this.header);
         this.viewElement.appendChild(this.mainContainer);
