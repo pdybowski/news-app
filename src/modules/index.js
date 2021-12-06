@@ -1,1 +1,1 @@
-export * from './news/view_news.js';
+export * from './news/news.js';
