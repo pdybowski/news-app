@@ -28,27 +28,28 @@ export class Jobs {
     }
     
     _start(){
-        this._createJobHeader('h2');
-        this._createJobDescription();
+        this._createJobHeader('h2', 'Job opportunities');
+        this._createJobText('Check out the latest jobs in your area!');
         this._createJobItems();
     }
 
-    _createJobItems(title, ){
+    _createJobItems(title, companyName){
         const itemContainer = document.createElement('div');
-        
+        const JobTitle = this._createJobHeader('h4', title);
+        const companyName = this._createJobText(companyName);
     }
 
-    _createHeader(typeOfHeader){
+    _createHeader(typeOfHeader, text){
         const sectionHeader = document.createElement(typeOfHeader);
         sectionHeader.classList.add('jobs--header')
-        sectionHeader.innerText = 'Job opportunities';
+        sectionHeader.innerText = text;
         this.viewElement.appendChild(sectionHeader)
     }
 
-    _createJobDescription(){
+    _createJobText(text){
         const jobSectionDescription = document.createElement('p');
         jobSectionDescription.classList.add('jobs--description')
-        jobSectionDescription.innerText = 'Check out the latest jobs in your area!';
+        jobSectionDescription.innerText = text;
         this.viewElement.appendChild(jobSectionDescription)
     }
 
