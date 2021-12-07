@@ -1,7 +1,7 @@
 export class Sport {
     constructor() {
         this.mainBox = document.querySelector('#main');
-        this.start();
+        this._start();
     }
     _start() {
         this._createContent();
@@ -9,7 +9,7 @@ export class Sport {
     }
     _createContent() {
         this.buttonsContainer = document.createElement('div');
-        this.buttonsContainer.className = 'buttons';
+        this.buttonsContainer.className = 'footbal__button';
         this.mainBox.appendChild(buttonsContainer);
     }
 

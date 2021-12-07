@@ -1,4 +1,4 @@
-.buttons {
+.football__button {
     padding: 20px 40px;
     margin: 20px;
     cursor: pointer;
@@ -11,7 +11,7 @@
     text-transform: uppercase;
 }
 
-.buttons:hover {
+.football__button:hover {
     background-color: #ddd;
     color: #000;
 }
