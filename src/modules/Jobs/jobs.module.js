@@ -6,6 +6,8 @@ export class Jobs {
         this.URL = `https://api.adzuna.com/v1/api/jobs/pl/search/1?app_id=${this.APP_ID}&app_key=${this.APP_KEY}`;
         this.fetchedData;
         this.fetchError;
+
+        this._render()
     }
 
     _render(){
@@ -19,29 +21,35 @@ export class Jobs {
     _start(data){
         this._createHeader('h2', 'Job opportunities');
         this._createJobText('Check out the latest jobs in your area!');
-        // this._createJobItems();
         const jobOffers = data
         console.log(jobOffers)
 
         for(const jobOffer of jobOffers){
-            const h1 = document.createElement('p');
-            h1.innerText = jobOffer.id;
-            this.viewElement.appendChild(h1)
+            // console.log(jobOffer.title);
+            // console.log(jobOffer.company.display_name);
+            // console.log(jobOffer.salary_max);
+            // console.log(jobOffer.salary_min);
+            // console.log(jobOffer.redirect_url);
+            this._createJobItems(jobOffer)
         }
     }
 
-    _createJobItems(title, company, min, max, link){
+    _createJobItems(item){
+        const [title, company, salary_max, salary_min, redirect_url] = item;
+
         const itemContainer = document.createElement('div');
         const JobTitle = this._createHeader('h4', title);
-        const companyName = this._createJobText(company);
-        const salaryRange = this._createSalaryBox(min, max)
-        const button =  _createButton(link)
+        const companyName = this._createJobText(company.display_name);
+        const salaryRange = this._createSalaryBox(salary_min, salary_max)
+        const button =  _createButton(redirect_url)
 
         itemContainer.appendChild(JobTitle);
         itemContainer.appendChild(companyName);
         itemContainer.appendChild(salaryRange);
         itemContainer.appendChild(salaryRange);
         itemContainer.appendChild(button);
+
+        this.viewElement.appendChild(itemContainer)
     }
 
     _createHeader(typeOfHeader, text){
@@ -74,4 +82,3 @@ export class Jobs {
 }
 
 const test = new Jobs();
-test._render()
