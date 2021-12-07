@@ -1,8 +1,5 @@
 body {
     background-image: url('../../content/img/health_background.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: left;
 }
 
 .health__title {
