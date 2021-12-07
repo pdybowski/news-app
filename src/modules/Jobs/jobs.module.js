@@ -35,11 +35,12 @@ export class Jobs {
     }
 
     _createJobItems(item){
-        const [title, company, salary_max, salary_min, redirect_url] = item;
+        const {title, company, salary_max, salary_min, redirect_url} = item;
 
         const itemContainer = document.createElement('div');
-        const JobTitle = this._createHeader('h4', title);
-        const companyName = this._createJobText(company.display_name);
+
+        const JobTitle = this._createHeaderElement('h4', title);
+        const companyName = this._createJobTextElement(company.display_name);
         const salaryRange = this._createSalaryBox(salary_min, salary_max)
         const button =  _createButton(redirect_url)
 
@@ -52,18 +53,32 @@ export class Jobs {
         this.viewElement.appendChild(itemContainer)
     }
 
+    _createHeaderElement(typeOfHeader, text){
+        const itemHeader = document.createElement(typeOfHeader);
+        itemHeader.classList.add('item--header')
+        itemHeader.innerText = text;
+        return itemHeader
+    }
+
     _createHeader(typeOfHeader, text){
         const sectionHeader = document.createElement(typeOfHeader);
         sectionHeader.classList.add('jobs--header')
         sectionHeader.innerText = text;
-        this.viewElement.appendChild(sectionHeader)
+        return sectionHeader
+    }
+
+    _createJobTextElement(text){
+        const jobDescription = document.createElement('p');
+        jobDescription.classList.add('job--description')
+        jobDescription.innerText = text;
+        return jobDescription
     }
 
     _createJobText(text){
         const jobSectionDescription = document.createElement('p');
         jobSectionDescription.classList.add('jobs--description')
         jobSectionDescription.innerText = text;
-        this.viewElement.appendChild(jobSectionDescription)
+        return jobSectionDescription
     }
 
     _createSalaryBox(minSalaryRange, maxSalaryRange){
@@ -72,13 +87,14 @@ export class Jobs {
 
         salaryRangeInfo.innerText = `Min. Salary: ${minSalaryRange} || Max. Salary: ${maxSalaryRange}`;
         salaryBox.appendChild(salaryRangeInfo);
+
+        return salaryBox
     }
 
     _createButton(){
         const jobButton = document.createElement('button');
         jobButton.classList.add('jobs--button')
         jobButton.innerText = 'Show more';
+        return jobButton
     }
 }
-
-const test = new Jobs();
