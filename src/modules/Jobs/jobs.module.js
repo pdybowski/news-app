@@ -25,10 +25,7 @@ export class Jobs {
         this._createJobText('Check out the latest jobs in your area!');
         const jobOffers = data
 
-        console.log(jobOffers)
-
         jobOffers.forEach((job) => {
-            // this._createJobItems(job)
             const offerBox = document.createElement('div');
             offerBox.classList.add('jobOffers__offerBox', 'position-relative', 'shadow', 'p-3', 'mb-5', 'bg-light', 'rounded');
             const offerHeader = document.createElement('h4');
@@ -61,20 +58,6 @@ export class Jobs {
 
         this.viewElement.appendChild(containerWithJobOffers)
     }
-
-    // _createJobItems(item) {
-    //     const offerBox = document.createElement('div');
-    //     const offerHeader = document.createElement('h4');
-    //     const offerDescription = document.createElement('p');
- 
-    //     offerHeader.innerText =  item.title ? item.title : 'No title for this role';
-    //     offerDescription.innerText = item.location.display_name ? item.location.display_name : 'Location unknown';
-    
-    //     offerBox.appendChild(offerHeader);
-    //     offerBox.appendChild(offerDescription);
-
-    //     return offerBox
-    // }
 
     _createHeaderElement(typeOfHeader, text) {
         const itemHeader = document.createElement(typeOfHeader);
