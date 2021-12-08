@@ -58,6 +58,8 @@ h1 {
     display: flex;
     list-style: none;
     background-color: rgb(167, 161, 197);
+    position: absolute;
+    width: 100%;
 }
 
 .nav--item {
