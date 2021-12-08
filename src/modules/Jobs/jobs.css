@@ -13,14 +13,14 @@
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
+    justify-content: start;
 }
 
 .jobOffers__offerBox {
-    flex-basis: 15%;
-    min-height: 400px;
+    flex-basis: 25%;
+    min-height: 350px;
 
-    margin: 10px 20px;
+    margin-left: 15px;
 }
 
 .jobOffers__offerBox--button{

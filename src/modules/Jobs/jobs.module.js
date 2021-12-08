@@ -30,11 +30,14 @@ export class Jobs {
         jobOffers.forEach((job) => {
             // this._createJobItems(job)
             const offerBox = document.createElement('div');
-            offerBox.classList.add('jobOffers__offerBox', 'position-relative', 'shadow-sm', 'p-3', 'mb-5', 'bg-light', 'rounded');
+            offerBox.classList.add('jobOffers__offerBox', 'position-relative', 'shadow', 'p-3', 'mb-5', 'bg-light', 'rounded');
             const offerHeader = document.createElement('h4');
+            offerHeader.classList.add('fs-4')
             const offerCompanyName = document.createElement('p');
             const offerLocalization = document.createElement('p');
+            offerLocalization.classList.add('fw-light')
             const offerSalary = document.createElement('span');
+            offerSalary.classList.add('fw-light')
             const button = document.createElement('a');
             button.setAttribute('href', job.redirect_url)
             button.setAttribute('target', '_blank')
