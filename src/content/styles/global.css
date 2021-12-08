@@ -53,3 +53,25 @@ h1 {
 .view__text--color {
     color: #ffffff;
 }
+
+.nav--list {
+    display: flex;
+    list-style: none;
+    background-color: rgb(167, 161, 197);
+}
+
+.nav--item {
+    line-height: 30px;
+    padding: 16px;
+}
+.nav--item__link {
+    text-align: center;
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.nav--item__link:hover {
+    color: rgba(184, 48, 48, 0.479);
+}
