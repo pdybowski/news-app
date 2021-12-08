@@ -20,6 +20,7 @@ export class Jobs {
 
     _renderContent(data) {
         const containerWithJobOffers = document.createElement('div');
+        containerWithJobOffers.classList.add('jobOffers--container');
         this._createHeader('h2', 'Job opportunities');
         this._createJobText('Check out the latest jobs in your area!');
         const jobOffers = data
@@ -29,11 +30,16 @@ export class Jobs {
         jobOffers.forEach((job) => {
             // this._createJobItems(job)
             const offerBox = document.createElement('div');
-            offerBox.classList.add('offer--container');
+            offerBox.classList.add('jobOffers__offerBox', 'position-relative', 'shadow-sm', 'p-3', 'mb-5', 'bg-light', 'rounded');
             const offerHeader = document.createElement('h4');
             const offerCompanyName = document.createElement('p');
             const offerLocalization = document.createElement('p');
             const offerSalary = document.createElement('span');
+            const button = document.createElement('a');
+            button.setAttribute('href', job.redirect_url)
+            button.setAttribute('target', '_blank')
+            button.classList.add('jobOffers__offerBox--button', 'position-absolute', 'bottom-0', 'start-50', 'translate-middle-x')
+            button.innerText = 'Show more!';
             let minSalary = job.salary_min ? job.salary_min : 'unknow';
             let maxSalary = job.salary_max ? job.salary_max : 'unknow';
 
@@ -46,6 +52,7 @@ export class Jobs {
             offerBox.appendChild(offerCompanyName);
             offerBox.appendChild(offerLocalization);
             offerBox.appendChild(offerSalary);
+            offerBox.appendChild(button);
             containerWithJobOffers.appendChild(offerBox);
         })
 
