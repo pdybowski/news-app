@@ -1,8 +1,6 @@
 export class Home {
     constructor() {
         this.viewElement = document.querySelector('#main');
-
-        this.start();
     }
 
     start() {

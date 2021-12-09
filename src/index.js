@@ -1,3 +1,4 @@
 import './content/styles/index.css';
+import App from './app';
 
-document.addEventListener('DOMContentLoaded', () => {});
+document.addEventListener('DOMContentLoaded', () => new App());
