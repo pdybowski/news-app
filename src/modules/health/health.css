@@ -1,0 +1,63 @@
+body {
+    background-image: url('../../content/img/health_background.jpg');
+}
+
+.health__title {
+    padding-top: 40px;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.health__subtitle {
+    font-size: 20px;
+}
+
+.health__title,
+.health__subtitle,
+.health__search-form,
+.health__search-result {
+    display: flex;
+    justify-content: left;
+    align-items: left;
+}
+
+.health__search-form {
+    margin: 10px 0;
+}
+
+.health__btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    width: 100px;
+    color: rgb(189, 198, 235);
+}
+
+.health__input-location {
+    height: 30px;
+    width: 300px;
+    border: 1.5px solid black;
+    border-radius: 4px;
+    background-color: rgb(189, 198, 235);
+    margin-right: 5px;
+}
+
+.health__search-result {
+    height: 40vh;
+    width: 405px;
+    border-radius: 3px;
+    background-color: rgb(204, 212, 241);
+    opacity: 0.8;
+    padding-top: 40px;
+}
+
+.health__search-result > p {
+    margin-left: 30px;
+    color: black;
+}
+
+.health__country {
+    font-size: 30px;
+    font-weight: 700;
+}

@@ -1,5 +1,5 @@
-import { Jobs as JobsModule } from './modules/Jobs/jobs.module';
+import 'regenerator-runtime/runtime';
+import './content/styles/index.css';
+import App from './app';
 
-document.addEventListener('DOMContentLoaded', () => {
-    new JobsModule();
-});
+document.addEventListener('DOMContentLoaded', () => new App());
