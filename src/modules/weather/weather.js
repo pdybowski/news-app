@@ -4,10 +4,9 @@ import { createColumn, createRow } from '../../utils';
 export class Weather {
     constructor() {
         this.viewElement = document.querySelector('#main');
-        this._start();
     }
 
-    async _start() {
+    async start() {
         try {
             await this._fetchData();
         } catch (error) {
