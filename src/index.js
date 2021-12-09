@@ -1,4 +1,5 @@
+import 'regenerator-runtime/runtime';
 import './content/styles/index.css';
-import { Home } from './modules';
+import App from './app';
 
 document.addEventListener('DOMContentLoaded', () => new App());
