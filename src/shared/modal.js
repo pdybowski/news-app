@@ -1,13 +1,31 @@
-import { createElement } from '../utils';
+import { createElement, isDefined } from '../utils';
 
-class Modal {
-    constructor(modalId, parentElement, headerText, contentComponent, footerComponent) {
-        this._parentElement = parentElement;
+export class Modal {
+    constructor(modalId, headerText, contentComponent, footerComponent = null) {
+        this._viewElement = document.querySelector('body');
         this._modalId = modalId;
         this._headerText = headerText;
         this._footerComponent = footerComponent;
         this._contentComponent = contentComponent;
         this._start();
+    }
+
+    create() {
+        this._viewElement.append(this._modalContainer);
+    }
+
+    remove() {
+        this._viewElement.removeChild(this._modalContainer);
+    }
+
+    createModalHandlerButton(attributes, events, innerText) {
+        const extendedAttributes = {
+            'data-bs-toggle': 'modal',
+            'data-bs-target': `#${this._modalId}`,
+            ...attributes,
+        };
+
+        return createElement('button', extendedAttributes, events, innerText);
     }
 
     _start() {
@@ -29,7 +47,7 @@ class Modal {
             'aria-label': 'Close',
         });
 
-        this.header.append(button);
+        this._header.append(button);
     }
 
     _createTitleElement() {
@@ -43,7 +61,7 @@ class Modal {
             this._headerText
         );
 
-        this.header.append(title);
+        this._header.append(title);
     }
 
     _createFooterElement() {
@@ -51,8 +69,20 @@ class Modal {
             class: 'modal-footer',
         });
 
-        this.content.append(footer);
-        footer.append(this._footerComponent);
+        this._content.append(footer);
+
+        if (isDefined(this._footerComponent)) {
+            footer.append(this._footerComponent);
+        } else {
+            footer.append(
+                createElement(
+                    'button',
+                    { type: 'button', class: 'btn btn-secondary', 'data-bs-dismiss': 'modal' },
+                    null,
+                    'Close'
+                )
+            );
+        }
     }
 
     _createBodyElement() {
@@ -60,24 +90,24 @@ class Modal {
             class: 'modal-body',
         });
 
-        this.content.append(body);
+        this._content.append(body);
         body.append(this._contentComponent);
     }
 
     _createHeaderElement() {
-        this.header = createElement('div', {
+        this._header = createElement('div', {
             class: 'modal-header',
         });
 
-        this.content.append(this.header);
+        this._content.append(this._header);
     }
 
     _createContentElement() {
-        this.content = createElement('div', {
+        this._content = createElement('div', {
             class: 'modal-content',
         });
 
-        this._dialog.append(this.content);
+        this._dialog.append(this._content);
     }
 
     _createModalContainer() {
@@ -88,7 +118,6 @@ class Modal {
             'aria-labelledby': 'modalTitleLabel',
             'aria-hidden': 'true',
         });
-        this._parentElement.append(this._modalContainer);
     }
 
     _createDialogElement() {
@@ -99,23 +128,3 @@ class Modal {
         this._modalContainer.append(this._dialog);
     }
 }
-
-function createModalHandlerButton(modalId, attributes, events, innerText) {
-    const extendedAttributes = {
-        'data-bs-toggle': 'modal',
-        'data-bs-target': `#${modalId}`,
-        ...attributes,
-    };
-
-    return createElement('button', extendedAttributes, events, innerText);
-}
-
-export default {
-    createModalHandlerButton: function (modalId, attributes, events, innerText) {
-        return createModalHandlerButton(modalId, attributes, events, innerText);
-    },
-
-    createModal: function (modalId, parentElement, headerText, contentComponent, footerComponent) {
-        return new Modal(modalId, parentElement, headerText, contentComponent, footerComponent);
-    },
-};
