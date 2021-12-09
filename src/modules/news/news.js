@@ -1,10 +1,9 @@
 export class News {
     constructor() {
         this.viewElement = document.querySelector('#main');
-        this._start();
     }
 
-    _start() {
+    start() {
         this._createTitle();
         this._createForm();
         this._createContainer();
