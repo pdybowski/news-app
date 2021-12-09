@@ -8,8 +8,6 @@ export class Jobs {
         this.URL = `https://api.adzuna.com/v1/api/jobs/pl/search/1?app_id=${this.APP_ID}&app_key=${this.APP_KEY}`;
         this.fetchedData;
         this.fetchError;
-
-        this.start()
     }
 
     start(){
