@@ -1,0 +1,48 @@
+.notification__container {
+    width: 300px;
+    position: sticky;
+    top: 10%;
+    right: 3%;
+    display: block;
+}
+
+.notification__message--success,
+.notification__message--info,
+.notification__message--error {
+    width: 300px;
+    border-radius: 20px;
+    margin-bottom: 5px;
+}
+
+.notification__message--success {
+    border: 4px solid rgb(10, 109, 10);
+    background-color: rgb(152, 231, 152);
+}
+
+.notification__message--info {
+    border: 4px solid rgb(26, 76, 168);
+    background-color: rgb(136, 178, 255);
+}
+
+.notification__message--error {
+    border: 4px solid rgb(141, 25, 17);
+    background-color: rgb(219, 219, 219);
+}
+
+.notification__header,
+.notification__message {
+    width: 270px;
+}
+
+.notification__header {
+    padding: 5px 0 0 20px;
+    font-weight: bold;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.notification__message {
+    padding: 3px 0 7px 20px;
+    font-size: 13px;
+}
