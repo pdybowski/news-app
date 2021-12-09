@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime';
 import './content/styles/index.css';
 import App from './app';
 
