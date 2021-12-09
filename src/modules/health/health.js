@@ -1,11 +1,9 @@
 export class Health {
     constructor() {
         this.viewElement = document.querySelector('#main');
-
-        this._start();
     }
 
-    _start() {
+    start() {
         this._createTitle();
         this._createSubtitle();
         this._createSearchForm();
@@ -46,7 +44,7 @@ export class Health {
         const searchResult = document.createElement('div');
 
         searchResult.setAttribute('class', 'health__search-result');
-       
+
         searchResult.appendChild(this._createCountry());
         searchResult.appendChild(this._createCases());
         searchResult.appendChild(this._createDeaths());

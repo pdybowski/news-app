@@ -1,3 +1,5 @@
+import { isDefined } from '.';
+
 export function createElement(tag, attributes, events, innerText) {
     const element = document.createElement(tag);
     if (isDefined(attributes)) {
@@ -15,6 +17,7 @@ export function createElement(tag, attributes, events, innerText) {
     }
     return element;
 }
+
 export function createRow() {
     const row = document.createElement('div');
     row.classList.add('row');
@@ -25,8 +28,4 @@ export function createColumn() {
     const col = document.createElement('div');
     col.classList.add('col');
     return col;
-}
-
-export function isDefined(object) {
-    return object !== undefined && object !== null;
 }

@@ -1,9 +1,9 @@
 export class Sport {
     constructor() {
         this.mainBox = document.querySelector('#main');
-        this._start();
     }
-    _start() {
+
+    start() {
         this._createContent();
         this._createButtons();
     }
