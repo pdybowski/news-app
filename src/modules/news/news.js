@@ -40,7 +40,7 @@ export class News {
         this._setAttributes(inputSubmit, {
             type: 'submit',
             value: 'submit',
-            class: 'search__button',
+            class: 'news__search--button',
         });
 
         label.innerText = 'Search for the topic';
@@ -111,7 +111,7 @@ export class News {
 
     _createButton() {
         const button = document.createElement('button');
-        button.setAttribute('class', 'news__button');
+        button.setAttribute('class', 'news__read--button');
         button.innerText = 'Read more';
         return button;
     }
