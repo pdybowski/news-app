@@ -1,3 +1,5 @@
+import './jobs.css'
+
 export class Jobs {
     constructor() {
         this.viewElement = document.querySelector('#main')
@@ -7,6 +9,10 @@ export class Jobs {
         this.fetchedData;
         this.fetchError;
 
+        this.start()
+    }
+
+    start(){
         this._fetchData()
     }
 
