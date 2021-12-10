@@ -18,7 +18,11 @@ export const SPORT_API = {
 };
 
 export const JOBS_API = {
-    API_BASE_URL: 'fadda830981b47b9ef3e023f82b349ca',
-    API_KEY: 'https://api.adzuna.com/v1/api/jobs/',
+    API_BASE_URL: 'https://api.adzuna.com/v1/api/jobs/',
+    API_KEY: 'fadda830981b47b9ef3e023f82b349ca',
     API_ID: '07300533',
+};
+
+export const GOVERNMENT_API = {
+    API_BASE_URL: 'https://api.dane.gov.pl/doc',
 };
