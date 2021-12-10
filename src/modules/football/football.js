@@ -1,3 +1,4 @@
+import SPORT_API from ""
 export class Sport {
     constructor() {
         this.mainBox = document.querySelector('#main');
