@@ -1,17 +1,17 @@
-import { WEATHER_API_HOST, WEATHER_API_KEY } from './weather.config';
+import { WEATHER_API } from '../../shared/environment';
 
 function getCurrentDayWeather(locationKey = 274663) {
-    const apiCurrentDaysUrl = `${WEATHER_API_HOST}currentconditions/v1/${locationKey}?apikey=${WEATHER_API_KEY}`;
+    const apiCurrentDaysUrl = `${WEATHER_API.API_BASE_URL}currentconditions/v1/${locationKey}?apikey=${WEATHER_API.API_KEY}`;
     return fetch(apiCurrentDaysUrl).then((response) => response.json());
 }
 
 function getFiveDayWeather(locationKey = 274663) {
-    const apiFiveDaysUrl = `${WEATHER_API_HOST}forecasts/v1/daily/5day/${locationKey}?apikey=${WEATHER_API_KEY}&metric=true`;
+    const apiFiveDaysUrl = `${WEATHER_API.API_BASE_URL}forecasts/v1/daily/5day/${locationKey}?apikey=${WEATHER_API.API_KEY}&metric=true`;
     return fetch(apiFiveDaysUrl).then((response) => response.json());
 }
 
 function getCurrentLocationInfo(locationKey = 274663) {
-    const apiFiveDaysUrl = `${WEATHER_API_HOST}locations/v1/${locationKey}?apikey=${WEATHER_API_KEY}`;
+    const apiFiveDaysUrl = `${WEATHER_API.API_BASE_URL}locations/v1/${locationKey}?apikey=${WEATHER_API.API_KEY}`;
     return fetch(apiFiveDaysUrl).then((response) => response.json());
 }
 

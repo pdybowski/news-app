@@ -1,16 +1,17 @@
 import api from './weather.api';
-import { createColumn, createRow } from '../../utils';
+import { createColumn, createElement, createRow } from '../../utils';
+import { Notification } from '../../shared';
 
 export class Weather {
     constructor() {
-        this.viewElement = document.querySelector('#main');
+        this._viewElement = document.querySelector('#main');
     }
 
     async start() {
         try {
             await this._fetchData();
         } catch (error) {
-            console.error(error);
+            new Notification().showError('Fetch weather data error', error);
         }
         this._createContainer();
     }
@@ -22,109 +23,109 @@ export class Weather {
     }
 
     _createContainer() {
-        this.container = document.createElement('div');
-        this.viewElement.appendChild(this.container);
+        this._container = createElement('div');
+        this._viewElement.append(this._container);
         this._createToday();
         this._createNextDays();
     }
 
     _createToday() {
         const currentDayDiv = createRow();
-        this._createCurrentDayInfoIn(currentDayDiv);
-        this._createCurrentDayWeatherIn(currentDayDiv);
-        this.container.append(currentDayDiv);
+        currentDayDiv.append(this._createCurrentDayInfo(), this._createCurrentDayWeatherIn());
+        this._container.append(currentDayDiv);
     }
 
-    _createCurrentDayInfoIn(parent) {
-        const currentDayInfoDiv = document.createElement('div');
-        this._createTitleIn(currentDayInfoDiv);
-        this._createInfoContentIn(currentDayInfoDiv);
-        parent.append(currentDayInfoDiv);
+    _createCurrentDayInfo() {
+        const currentDayInfoDiv = createElement('div');
+        currentDayInfoDiv.append(this._createTitle(), this._createInfoContent());
+        return currentDayInfoDiv;
     }
 
-    _createTitleIn(parent) {
-        const title = document.createElement('h1');
+    _createTitle() {
+        const title = createElement('h1');
         title.innerText = `Weather in ${this._currentLocationInfo.LocalizedName}`;
-        parent.appendChild(title);
+        return title;
     }
 
-    _createInfoContentIn(parent) {
-        const infoContentDiv = document.createElement('div');
+    _createInfoContent() {
+        const infoContentDiv = createElement('div');
         infoContentDiv.innerText = this._fiveDayWeather.Headline.Text;
-        parent.append(infoContentDiv);
+        return infoContentDiv;
     }
 
-    _createCurrentDayWeatherIn(parent) {
-        const currentDayWeatherDiv = document.createElement('div');
+    _createCurrentDayWeatherIn() {
+        const currentDayWeatherDiv = createElement('div');
 
         const dailyForecast = this._fiveDayWeather.DailyForecasts[0];
-        this._createWeatherElementIn(
-            currentDayWeatherDiv,
-            `${this._currentDayWeather[0].Temperature.Metric.Value}°C`,
-            dailyForecast.Day.Icon,
-            `↑ ${dailyForecast.Temperature.Maximum.Value}`,
-            `↓ ${dailyForecast.Temperature.Minimum.Value}`,
-            true
+
+        currentDayWeatherDiv.append(
+            this._createWeatherElement(
+                `${this._currentDayWeather[0].Temperature.Metric.Value}°C`,
+                dailyForecast.Day.Icon,
+                `↑ ${dailyForecast.Temperature.Maximum.Value}`,
+                `↓ ${dailyForecast.Temperature.Minimum.Value}`,
+                true
+            )
         );
 
-        parent.append(currentDayWeatherDiv);
+        return currentDayWeatherDiv;
     }
 
     _createNextDays() {
         const nextDaysDiv = createRow();
-        this._fiveDayWeather['DailyForecasts'].forEach((dailyData) => {
+        this._fiveDayWeather.DailyForecasts.forEach((dailyData) => {
             const column = createColumn();
-            this._createWeatherElementIn(
-                column,
-                new Date(dailyData.Date).getDay(),
-                dailyData.Day.Icon,
-                dailyData.Temperature.Maximum.Value,
-                dailyData.Temperature.Minimum.Value
+            column.append(
+                this._createWeatherElement(
+                    new Date(dailyData.Date).getDay(),
+                    dailyData.Day.Icon,
+                    dailyData.Temperature.Maximum.Value,
+                    dailyData.Temperature.Minimum.Value
+                )
             );
             nextDaysDiv.append(column);
         });
 
-        this.container.append(nextDaysDiv);
+        this._container.append(nextDaysDiv);
     }
 
-    _createWeatherElementIn(
-        parent,
+    _createWeatherElement(
         firstElement,
         icon,
         maxTemperature,
         minTemperature,
         isHorizontal = false
     ) {
-        const weatherElement = isHorizontal ? createRow() : document.createElement('div');
+        const weatherElement = isHorizontal ? createRow() : createElement('div');
 
         weatherElement.append(
-            this._createFirstElementDiv(firstElement, isHorizontal),
-            this._createWeatherIconDiv(icon, isHorizontal),
-            this._createTemperatureRangeDiv(maxTemperature, minTemperature, isHorizontal)
+            this._createFirstElement(firstElement, isHorizontal),
+            this._createWeatherIcon(icon, isHorizontal),
+            this._createTemperatureRange(maxTemperature, minTemperature, isHorizontal)
         );
 
-        parent.append(weatherElement);
+        return weatherElement;
     }
 
-    _createTemperatureRangeDiv(maxTemperature, minTemperature, isHorizontal = false) {
+    _createTemperatureRange(maxTemperature, minTemperature, isHorizontal = false) {
         const temperatureRangeDiv = isHorizontal ? createColumn() : createRow();
 
-        const maxTempDiv = this._createTempDiv(maxTemperature);
+        const maxTempDiv = this._createTemperature(maxTemperature);
         maxTempDiv.classList.add('fw-bold');
 
-        temperatureRangeDiv.append(maxTempDiv, this._createTempDiv(minTemperature));
+        temperatureRangeDiv.append(maxTempDiv, this._createTemperature(minTemperature));
 
         return temperatureRangeDiv;
     }
 
-    _createTempDiv(temperature, isHorizontal = false) {
-        const temperatureDiv = isHorizontal ? document.createElement('div') : createColumn();
+    _createTemperature(temperature, isHorizontal = false) {
+        const temperatureDiv = isHorizontal ? createElement('div') : createColumn();
         temperatureDiv.innerText = `${temperature}°C`;
         return temperatureDiv;
     }
 
-    _createFirstElementDiv(value, isHorizontal = false) {
-        const firstElementDiv = isHorizontal ? createColumn() : document.createElement('div');
+    _createFirstElement(value, isHorizontal = false) {
+        const firstElementDiv = isHorizontal ? createColumn() : createElement('div');
 
         switch (value) {
             case 0:
@@ -156,10 +157,11 @@ export class Weather {
         return firstElementDiv;
     }
 
-    _createWeatherIconDiv(icon, isHorizontal = false) {
-        const weatherIconDiv = isHorizontal ? createColumn() : document.createElement('div');
-        const img = document.createElement('img');
-        img.src = `./content/img/weather/${icon}-s.png`;
+    _createWeatherIcon(iconId, isHorizontal = false) {
+        const weatherIconDiv = isHorizontal ? createColumn() : createElement('div');
+        const img = createElement('img', {
+            src: `./content/img/weather/${iconId}-s.png`,
+        });
         weatherIconDiv.appendChild(img);
         return weatherIconDiv;
     }
