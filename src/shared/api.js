@@ -1,6 +1,6 @@
-class API {
-    constructor(apiUrl, apiKey, apiId) {
-        this.apiUrl = baseUrl;
+export class API {
+    constructor(baseUrl, apiKey, apiId) {
+        this.baseUrl = baseUrl;
         this.apiKey = apiKey;
         this.apiId = apiId;
     }
