@@ -15,6 +15,11 @@ function getCurrentLocationInfo(locationKey = 274663) {
     return fetch(apiFiveDaysUrl).then((response) => response.json());
 }
 
+function getCityList(query) {
+    const cityListUrl = `${WEATHER_API.API_BASE_URL}locations/v1/cities/autocomplete?apikey=${WEATHER_API.API_KEY}&q=${query}`;
+    return fetch(cityListUrl).then((response) => response.json());
+}
+
 export default {
     getCurrentLocationInfo: function (locationKey) {
         return getCurrentLocationInfo(locationKey);
@@ -25,5 +30,8 @@ export default {
     },
     getFiveDayWeather: function (locationKey) {
         return getFiveDayWeather(locationKey);
+    },
+    getCityList: function (city) {
+        return getCityList(city);
     },
 };

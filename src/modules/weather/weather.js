@@ -1,10 +1,15 @@
 import api from './weather.api';
-import { createColumn, createElement, createRow } from '../../utils';
-import { Notification } from '../../shared';
+import { createColumn, createElement, createRow, isDefined } from '../../utils';
+import { Modal, Notification } from '../../shared';
+
+const WEATHER_COUNTRY_KEY = 'weather.country.id';
 
 export class Weather {
     constructor() {
         this._viewElement = document.querySelector('#main');
+        if (!isDefined(localStorage.getItem(WEATHER_COUNTRY_KEY))) {
+            localStorage.setItem(WEATHER_COUNTRY_KEY, '274663');
+        }
     }
 
     async start() {
@@ -13,26 +18,32 @@ export class Weather {
         } catch (error) {
             new Notification().showError('Fetch weather data error', error);
         }
-        this._createContainer();
+        this._createMainContainer();
+        this._createSettingsContainer();
+        this._createWeatherContainer();
     }
 
     async _fetchData() {
-        this._fiveDayWeather = await api.getFiveDayWeather();
-        this._currentDayWeather = await api.getCurrentDayWeather();
-        this._currentLocationInfo = await api.getCurrentLocationInfo();
+        this._fiveDayWeather = await api.getFiveDayWeather(
+            localStorage.getItem(WEATHER_COUNTRY_KEY)
+        );
+        this._currentDayWeather = await api.getCurrentDayWeather(
+            localStorage.getItem(WEATHER_COUNTRY_KEY)
+        );
+        this._currentLocationInfo = await api.getCurrentLocationInfo(
+            localStorage.getItem(WEATHER_COUNTRY_KEY)
+        );
     }
 
-    _createContainer() {
+    _createMainContainer() {
         this._container = createElement('div');
         this._viewElement.append(this._container);
-        this._createToday();
-        this._createNextDays();
     }
 
     _createToday() {
         const currentDayDiv = createRow();
         currentDayDiv.append(this._createCurrentDayInfo(), this._createCurrentDayWeatherIn());
-        this._container.append(currentDayDiv);
+        this._weatherContainer.append(currentDayDiv);
     }
 
     _createCurrentDayInfo() {
@@ -86,7 +97,7 @@ export class Weather {
             nextDaysDiv.append(column);
         });
 
-        this._container.append(nextDaysDiv);
+        this._weatherContainer.append(nextDaysDiv);
     }
 
     _createWeatherElement(
@@ -164,5 +175,128 @@ export class Weather {
         });
         weatherIconDiv.appendChild(img);
         return weatherIconDiv;
+    }
+
+    _createSettingsContainer() {
+        const settings = new Modal('weatherModal', 'Weather settings', this._createSettingsBody());
+        settings.create();
+        const settingsButtonContainer = createElement('div', {
+            class: 'row justify-content-end mt-1',
+        });
+        settingsButtonContainer.append(
+            settings.createModalHandlerButton(
+                { class: 'weather__settings btn btn-primary col-1' },
+                null,
+                'Settings'
+            )
+        );
+        this._container.append(settingsButtonContainer);
+    }
+
+    _createSettingsBody() {
+        this._settingsBody = createElement('div', { class: 'container' });
+        this._createSettingsSearchForm();
+        return this._settingsBody;
+    }
+
+    _createSettingsSearchForm() {
+        this._setingsFormElement = createElement('form', {
+            class: 'row',
+        });
+
+        this._createSearchCountryInput();
+        this._createSearchCountrySaveButton();
+
+        this._settingsBody.append(this._setingsFormElement);
+    }
+
+    _createSearchCountryInput() {
+        const countrySearchContainer = createElement('div', { class: 'form-floating col ps-0' });
+        this._countrySearchElement = createElement(
+            'input',
+            {
+                class: 'form-control',
+                list: 'datalistOptions',
+                id: 'countrySearch',
+                placeholder: 'Type to search...',
+                value: localStorage.getItem(WEATHER_COUNTRY_KEY),
+            },
+            { keyup: () => this._getAutocompleteCityList() }
+        );
+        countrySearchContainer.append(this._countrySearchElement);
+        countrySearchContainer.append(
+            createElement(
+                'label',
+                {
+                    for: 'countrySearch',
+                },
+                null,
+                'Country ID'
+            )
+        );
+
+        this._createSettingsDatalistElement(countrySearchContainer);
+        this._setingsFormElement.append(countrySearchContainer);
+    }
+
+    _createSettingsDatalistElement(parent) {
+        this._datalistElement = createElement('datalist', { id: 'datalistOptions' });
+        parent.append(this._datalistElement);
+    }
+
+    async _getAutocompleteCityList() {
+        this._datalistElement.innerHTML = '';
+        if (this._countrySearchElement.value !== '') {
+            const cityListData = await api.getCityList(this._countrySearchElement.value);
+            cityListData.forEach((dataElement) => {
+                const cityElement = createElement(
+                    'option',
+                    {
+                        value: dataElement.Key,
+                    },
+                    null,
+                    `${dataElement.LocalizedName}, ${dataElement.AdministrativeArea.LocalizedName}, ${dataElement.Country.LocalizedName}`
+                );
+                this._datalistElement.append(cityElement);
+            });
+        }
+    }
+
+    _createSearchCountrySaveButton() {
+        this._setingsFormElement.append(
+            createElement(
+                'button',
+                {
+                    type: 'button',
+                    class: 'btn btn-primary col-2',
+                },
+                {
+                    click: async () => {
+                        localStorage.setItem(WEATHER_COUNTRY_KEY, this._countrySearchElement.value);
+                        await this._refreshWeatherContainer();
+                    },
+                },
+                'Save'
+            )
+        );
+    }
+
+    async _refreshWeatherContainer() {
+        try {
+            await this._fetchData();
+        } catch (error) {
+            new Notification().showError('Fetch weather data error', error);
+        }
+        this._createWeatherContainer();
+    }
+
+    _createWeatherContainer() {
+        if (isDefined(document.getElementById('weatherContainer'))) {
+            this._container.removeChild(document.getElementById('weatherContainer'));
+        }
+        this._weatherContainer = createElement('div', { id: 'weatherContainer', class: 'row' });
+        this._container.append(this._weatherContainer);
+        this._createToday();
+        this._createNextDays();
     }
 }
