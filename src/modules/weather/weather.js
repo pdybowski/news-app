@@ -1,4 +1,4 @@
-import api from './weather.api';
+import { WeatherApi } from './weatherApi';
 import { createColumn, createElement, createRow, isDefined } from '../../utils';
 import { Modal, Notification } from '../../shared';
 
@@ -10,6 +10,7 @@ export class Weather {
         if (!isDefined(localStorage.getItem(WEATHER_COUNTRY_KEY))) {
             localStorage.setItem(WEATHER_COUNTRY_KEY, '274663');
         }
+        this._api = new WeatherApi();
     }
 
     async start() {
@@ -24,13 +25,13 @@ export class Weather {
     }
 
     async _fetchData() {
-        this._fiveDayWeather = await api.getFiveDayWeather(
+        this._fiveDayWeather = await this._api.getFiveDayWeather(
             localStorage.getItem(WEATHER_COUNTRY_KEY)
         );
-        this._currentDayWeather = await api.getCurrentDayWeather(
+        this._currentDayWeather = await this._api.getCurrentDayWeather(
             localStorage.getItem(WEATHER_COUNTRY_KEY)
         );
-        this._currentLocationInfo = await api.getCurrentLocationInfo(
+        this._currentLocationInfo = await this._api.getCurrentLocationInfo(
             localStorage.getItem(WEATHER_COUNTRY_KEY)
         );
     }
@@ -247,7 +248,7 @@ export class Weather {
     async _getAutocompleteCityList() {
         this._datalistElement.innerHTML = '';
         if (this._countrySearchElement.value !== '') {
-            const cityListData = await api.getCityList(this._countrySearchElement.value);
+            const cityListData = await this._api.getCityList(this._countrySearchElement.value);
             cityListData.forEach((dataElement) => {
                 const cityElement = createElement(
                     'option',
