@@ -72,7 +72,7 @@ export class Notification {
         errorContainer.append(messageContainer)
 
         this.notificationContainer.append(errorContainer);
-        this._removeMessage(infoContainer)
+        this._removeMessage(errorContainer)
     }
 
     _createNotificationContainer() {

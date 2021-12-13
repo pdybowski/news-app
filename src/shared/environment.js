@@ -5,7 +5,7 @@ export const NEWS_API = {
 
 export const WEATHER_API = {
     API_BASE_URL: 'http://dataservice.accuweather.com/',
-    API_KEY: '7QG1mLbGe9lQFuGHQimBdZszKAnuBETm',
+    API_KEY: 'vCC75BFjAz8GG8jwDevhm68WZIu3ShpZ',
 };
 
 export const HEALTH_API = {

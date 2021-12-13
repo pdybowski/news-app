@@ -33,6 +33,7 @@ export default class Router {
     }
 
     _routeChanged() {
+        this._clearView();
         const path = window.location.hash ? window.location.hash.slice(1) : '/';
 
         let foundRoute = this.routes.find(
