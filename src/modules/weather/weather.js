@@ -1,14 +1,13 @@
 import { WeatherApi } from './weatherApi';
 import { createColumn, createElement, createRow, isDefined } from '../../utils';
 import { Modal, Notification } from '../../shared';
-
-const WEATHER_COUNTRY_KEY = 'weather.country.id';
+import { WEATHER_COUNTRY_KEY_LS } from './constants';
 
 export class Weather {
     constructor() {
         this._viewElement = document.querySelector('#main');
-        if (!isDefined(localStorage.getItem(WEATHER_COUNTRY_KEY))) {
-            localStorage.setItem(WEATHER_COUNTRY_KEY, '274663');
+        if (!isDefined(localStorage.getItem(WEATHER_COUNTRY_KEY_LS))) {
+            localStorage.setItem(WEATHER_COUNTRY_KEY_LS, '274663');
         }
         this._api = new WeatherApi();
     }
@@ -16,23 +15,23 @@ export class Weather {
     async start() {
         try {
             await this._fetchData();
+            this._createMainContainer();
+            this._createSettingsContainer();
+            this._createWeatherContainer();
         } catch (error) {
             new Notification().showError('Fetch weather data error', error);
         }
-        this._createMainContainer();
-        this._createSettingsContainer();
-        this._createWeatherContainer();
     }
 
     async _fetchData() {
         this._fiveDayWeather = await this._api.getFiveDayWeather(
-            localStorage.getItem(WEATHER_COUNTRY_KEY)
+            localStorage.getItem(WEATHER_COUNTRY_KEY_LS)
         );
         this._currentDayWeather = await this._api.getCurrentDayWeather(
-            localStorage.getItem(WEATHER_COUNTRY_KEY)
+            localStorage.getItem(WEATHER_COUNTRY_KEY_LS)
         );
         this._currentLocationInfo = await this._api.getCurrentLocationInfo(
-            localStorage.getItem(WEATHER_COUNTRY_KEY)
+            localStorage.getItem(WEATHER_COUNTRY_KEY_LS)
         );
     }
 
@@ -220,7 +219,7 @@ export class Weather {
                 list: 'datalistOptions',
                 id: 'countrySearch',
                 placeholder: 'Type to search...',
-                value: localStorage.getItem(WEATHER_COUNTRY_KEY),
+                value: localStorage.getItem(WEATHER_COUNTRY_KEY_LS),
             },
             { keyup: () => this._getAutocompleteCityList() }
         );
@@ -248,18 +247,22 @@ export class Weather {
     async _getAutocompleteCityList() {
         this._datalistElement.innerHTML = '';
         if (this._countrySearchElement.value !== '') {
-            const cityListData = await this._api.getCityList(this._countrySearchElement.value);
-            cityListData.forEach((dataElement) => {
-                const cityElement = createElement(
-                    'option',
-                    {
-                        value: dataElement.Key,
-                    },
-                    null,
-                    `${dataElement.LocalizedName}, ${dataElement.AdministrativeArea.LocalizedName}, ${dataElement.Country.LocalizedName}`
-                );
-                this._datalistElement.append(cityElement);
-            });
+            try {
+                const cityListData = await this._api.getCityList(this._countrySearchElement.value);
+                cityListData.forEach((dataElement) => {
+                    const cityElement = createElement(
+                        'option',
+                        {
+                            value: dataElement.Key,
+                        },
+                        null,
+                        `${dataElement.LocalizedName}, ${dataElement.AdministrativeArea.LocalizedName}, ${dataElement.Country.LocalizedName}`
+                    );
+                    this._datalistElement.append(cityElement);
+                });
+            } catch (error) {
+                new Notification().showError('Fetch weather data error', error);
+            }
         }
     }
 
@@ -272,23 +275,27 @@ export class Weather {
                     class: 'btn btn-primary col-2',
                 },
                 {
-                    click: async () => {
-                        localStorage.setItem(WEATHER_COUNTRY_KEY, this._countrySearchElement.value);
-                        await this._refreshWeatherContainer();
-                    },
+                    click: this._updateWeatherConfiguration(),
                 },
                 'Save'
             )
         );
     }
 
+    _updateWeatherConfiguration() {
+        return async () => {
+            localStorage.setItem(WEATHER_COUNTRY_KEY_LS, this._countrySearchElement.value);
+            await this._refreshWeatherContainer();
+        };
+    }
+
     async _refreshWeatherContainer() {
         try {
             await this._fetchData();
+            this._createWeatherContainer();
         } catch (error) {
             new Notification().showError('Fetch weather data error', error);
         }
-        this._createWeatherContainer();
     }
 
     _createWeatherContainer() {
