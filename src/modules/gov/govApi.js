@@ -1,7 +1,7 @@
 import { GOVERNMENT_API } from '../../shared/environment';
 import { API } from '../../shared';
 
-export class WeatherApi extends API {
+export class GovApi extends API {
     constructor() {
         super(GOVERNMENT_API.API_BASE_URL, null, null);
     }
