@@ -10,7 +10,7 @@ export class Jobs {
         this.fetchError;
     }
 
-    start(){
+    start() {
         this._fetchData()
     }
 
@@ -30,28 +30,37 @@ export class Jobs {
         const jobOffers = data
 
         jobOffers.forEach((job) => {
-            const offerBox = document.createElement('div');
-            offerBox.classList.add('jobOffers__offerBox', 'position-relative', 'shadow', 'p-3', 'mb-5', 'bg-light', 'rounded');
-            const offerHeader = document.createElement('h4');
-            offerHeader.classList.add('fs-4')
-            const offerCompanyName = document.createElement('p');
-            const offerLocalization = document.createElement('p');
-            offerLocalization.classList.add('fw-light')
-            const offerSalary = document.createElement('span');
-            offerSalary.classList.add('fw-light')
-            const button = document.createElement('a');
-            button.setAttribute('href', job.redirect_url)
-            button.setAttribute('target', '_blank')
-            button.classList.add('jobOffers__offerBox--button', 'position-absolute', 'bottom-0', 'start-50', 'translate-middle-x')
-            button.innerText = 'Show more!';
-            let minSalary = job.salary_min ? job.salary_min : 'unknow';
-            let maxSalary = job.salary_max ? job.salary_max : 'unknow';
+            // const offerBox = document.createElement('div');
+            // offerBox.classList.add('jobOffers__offerBox', 'position-relative', 'shadow', 'p-3', 'mb-5', 'bg-light', 'rounded');
+            _createBoxOffer()
 
-            offerHeader.innerText =  job.title ? job.title : 'No title for this role';
-            offerCompanyName.innerText =  job.company.display_name ? job.company.display_name : null;
-            offerLocalization.innerText = job.location.display_name ? job.location.display_name : 'Location unknown';
-            offerSalary.innerText = `min. salary: ${minSalary} || max. salary: ${maxSalary}`;
-        
+            // const offerHeader = document.createElement('h4');
+            // offerHeader.classList.add('fs-4')
+            _createBoxOfferHeader(job.title)
+
+            // const offerCompanyName = document.createElement('p');
+            _createBoxOfferCompanyName(job.company.display_name)
+            // const offerLocalization = document.createElement('p');
+            // offerLocalization.classList.add('fw-light')
+            _createBoxOfferCompanyLocalization(job.location.display_name)
+
+            // const offerSalary = document.createElement('span');
+            // offerSalary.classList.add('fw-light')
+            _createBoxOfferSalaryRange(job.salary_min, job.salary_max)
+            // const button = document.createElement('a');
+            // button.setAttribute('href', job.redirect_url)
+            // button.setAttribute('target', '_blank')
+            // button.classList.add('jobOffers__offerBox--button', 'position-absolute', 'bottom-0', 'start-50', 'translate-middle-x')
+            // button.innerText = 'Show more!';
+            _createBoxOfferButton(job.redirect_url)
+            // let minSalary = job.salary_min ? job.salary_min : 'unknow';
+            // let maxSalary = job.salary_max ? job.salary_max : 'unknow';
+
+            // offerHeader.innerText = job.title ? job.title : 'No title for this role';
+            // offerCompanyName.innerText = job.company.display_name ? job.company.display_name : null;
+            // offerLocalization.innerText = job.location.display_name ? job.location.display_name : 'Location unknown';
+            // offerSalary.innerText = `min. salary: ${minSalary} || max. salary: ${maxSalary}`;
+
             offerBox.appendChild(offerHeader);
             offerBox.appendChild(offerCompanyName);
             offerBox.appendChild(offerLocalization);
@@ -61,6 +70,51 @@ export class Jobs {
         })
 
         this.viewElement.appendChild(containerWithJobOffers)
+    }
+
+    _createBoxOffer() {
+        const offerBox = document.createElement('div');
+        offerBox.classList.add('jobOffers__offerBox', 'position-relative', 'shadow', 'p-3', 'mb-5', 'bg-light', 'rounded');
+        return offerBox
+    }
+
+    _createBoxOfferHeader(title) {
+        const offerHeader = document.createElement('h4');
+        offerHeader.classList.add('fs-4')
+        offerHeader.innerText = title ? title : 'No title for this role';
+        return offerHeader
+    }
+
+    _createBoxOfferCompanyName(comapnyName) {
+        const offerCompanyName = document.createElement('p');
+        offerCompanyName.innerText = comapnyName ? comapnyName : null;
+        return offerCompanyName
+    }
+
+    _createBoxOfferCompanyLocalization(comapnyLocalization) {
+        const offerLocalization = document.createElement('p');
+        offerLocalization.classList.add('fw-light')
+        offerLocalization.innerText = comapnyLocalization ? comapnyLocalization : 'Location unknown';
+        return offerLocalization
+    }
+
+    _createBoxOfferSalaryRange(salaryMin, salaryMax) {
+        const offerSalary = document.createElement('span');
+        offerSalary.classList.add('fw-light');
+        let minSalary = salaryMin ? salaryMin : 'unknow';
+        let maxSalary = salaryMax ? salaryMax : 'unknow';
+
+        offerSalary.innerText = `min. salary: ${minSalary} || max. salary: ${maxSalary}`;
+        return offerSalary
+    }
+
+    _createBoxOfferButton(link) {
+        const button = document.createElement('a');
+        button.setAttribute('href', link)
+        button.setAttribute('target', '_blank')
+        button.classList.add('jobOffers__offerBox--button', 'position-absolute', 'bottom-0', 'start-50', 'translate-middle-x')
+        button.innerText = 'Show more!';
+        return button
     }
 
     _createHeaderElement(typeOfHeader, text) {
