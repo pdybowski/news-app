@@ -81,8 +81,8 @@
     line-height: 150%;
 }
 
-.search__button,
-.news__button {
+.news__search--button,
+.news__read--button {
     height: 38px;
     padding: 0 30px;
     color: #555;
@@ -96,17 +96,17 @@
     cursor: pointer;
 }
 
-.search__button {
+.news__search--button {
     display: inline-block;
 }
 
-.news__button {
+.news__read--button {
     margin: 0 auto;
     display: block;
     margin-top: 15px;
 }
 
-.search__button:hover,
-.news__button:hover {
+.news__search--button:hover,
+.news__read--button:hover {
     background-color: rgb(207, 207, 207);
 }
