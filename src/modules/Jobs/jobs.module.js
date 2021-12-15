@@ -30,12 +30,12 @@ export class Jobs {
         const jobOffers = data
 
         jobOffers.forEach((job) => {
-            _createBoxOffer();
-            _createBoxOfferHeader(job.title);
-            _createBoxOfferCompanyName(job.company.display_name);
-            _createBoxOfferCompanyLocalization(job.location.display_name);
-            _createBoxOfferSalaryRange(job.salary_min, job.salary_max);
-            _createBoxOfferButton(job.redirect_url);
+            const offerBox = _createBoxOffer();
+            const offerHeader = _createBoxOfferHeader(job.title);
+            const offerCompanyName = _createBoxOfferCompanyName(job.company.display_name);
+            const offerLocalization = _createBoxOfferCompanyLocalization(job.location.display_name);
+            const offerSalary = _createBoxOfferSalaryRange(job.salary_min, job.salary_max);
+            const button = _createBoxOfferButton(job.redirect_url);
 
             offerBox.appendChild(offerHeader);
             offerBox.appendChild(offerCompanyName);
