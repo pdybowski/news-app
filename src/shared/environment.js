@@ -24,5 +24,5 @@ export const JOBS_API = {
 };
 
 export const GOVERNMENT_API = {
-    API_BASE_URL: 'https://api.dane.gov.pl/doc',
+    API_BASE_URL: 'https://api.dane.gov.pl/1.4/',
 };
