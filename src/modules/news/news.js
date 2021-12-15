@@ -1,126 +1,168 @@
+import { NewsApi } from './newsApi';
+import { Notification } from '../../shared/notifications/notifications';
+import { createElement } from '../../utils/createElement';
+
 export class News {
     constructor() {
         this.viewElement = document.querySelector('#main');
+        this._api = new NewsApi();
+        this.start();
     }
 
-    start() {
-        this._createTitle();
-        this._createForm();
-        this._createContainer();
+    async start() {
+        try {
+            await this._fetchData();
+            this._createTitle();
+            this._createForm();
+        } catch (error) {
+            new Notification().showError('Fetch news data error', error);
+        }
+    }
+
+    async _fetchData() {
+        this._topNews = await this._api.getTopNews('top-headlines').then((response) => {
+            let main = this._createContainer();
+            let data = response.articles;
+            data.forEach((article) => {
+                console.log(article);
+                main.appendChild(this._createCard(article));
+            });
+        });
+    }
+
+    async _searchData(keyword) {
+        this._searchNews = await this._api.getSearchedNews(keyword).then((response) => {
+            let main = this._createContainer();
+            let data = response.articles;
+            data.forEach((article) => {
+                console.log(article);
+                main.appendChild(this._createCard(article));
+            });
+        });
     }
 
     _createTitle() {
-        const mainTitle = document.createElement('h1');
-        mainTitle.setAttribute('class', 'news__title');
-        this.viewElement.appendChild(mainTitle);
-        mainTitle.innerText = 'The News';
+        this._title = createElement('h1', { class: 'news__title' }, null, 'The News');
+        this.viewElement.appendChild(this._title);
     }
 
-    //helper function that set multiple attributes of an element
-    _setAttributes(element, attributes) {
-        for (let key in attributes) {
-            element.setAttribute(key, attributes[key]);
+    _searchKeyword() {
+        let newKeyword = document.querySelector('.news__input').value;
+        let container = document.querySelector('.news__container');
+        if (container && newKeyword) {
+            this.viewElement.removeChild(container);
+            this._searchData(newKeyword);
         }
     }
 
     _createForm() {
-        const form = document.createElement('form');
-        const label = document.createElement('label');
-        const inputText = document.createElement('input');
-        const inputSubmit = document.createElement('input');
+        this._form = createElement('form', { class: 'news__form' });
+        this._form.append(
+            this._createLabel(),
+            this._createInput(),
+            this._createButton('news__search--button', 'search', {
+                click: this._searchKeyword.bind(this),
+            })
+        );
+        this.viewElement.appendChild(this._form);
+    }
 
-        form.setAttribute('class', 'news__form');
-        label.setAttribute('for', 'news__label');
-        this._setAttributes(inputText, {
+    _createLabel() {
+        this._label = createElement('label', { for: 'news__label' });
+        return this._label;
+    }
+
+    _createInput() {
+        this._input = createElement('input', {
             type: 'text',
             id: 'news',
             name: 'news',
             class: 'news__input',
         });
-        this._setAttributes(inputSubmit, {
-            type: 'submit',
-            value: 'submit',
-            class: 'news__search--button',
-        });
+        return this._input;
+    }
 
-        label.innerText = 'Search for the topic';
-
-        form.append(label, inputText, inputSubmit);
-        this.viewElement.appendChild(form);
+    _createInputButton() {
+        const inputButton = this._createButton('news__search--button', 'search');
+        inputButton.addEventListener('click', this._searchKeyword.bind(this));
     }
 
     _createContainer() {
-        const mainContainer = document.createElement('div');
-        mainContainer.setAttribute('class', 'news__container');
-        this.viewElement.appendChild(mainContainer);
-        //the number of articles displayed will depend on the limit set in the API query (max. 10);
-        for (let i = 0; i < 5; i++) {
-            mainContainer.appendChild(this._createCard());
-        }
+        this._container = createElement('div', { class: 'news__container' });
+        this.viewElement.appendChild(this._container);
+        return this._container;
     }
 
-    _createCard() {
-        const card = document.createElement('div');
-        card.setAttribute('class', 'news__card');
-        card.appendChild(this._createImg());
-        card.appendChild(this._createCardDetails());
-        return card;
+    _createCard(parameter) {
+        this._card = createElement('div', { class: 'news__card' }, null, null);
+        this._card.appendChild(this._createImg(parameter));
+        this._card.appendChild(this._createCardDetails(parameter));
+        return this._card;
     }
 
-    _createImg() {
-        const img = document.createElement('img');
-        this._setAttributes(img, {
-            src: 'https://images.unsplash.com/photo-1636884285351-0f14627ada21?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+    _createImg(parameter) {
+        this._img = createElement('img', {
             alt: '',
             class: 'news__img',
         });
-
-        return img;
+        if (parameter.urlToImage) {
+            this._img.setAttribute('src', `${parameter.urlToImage}`);
+        } else {
+            this._img.setAttribute(
+                'src',
+                'https://images.unsplash.com/photo-1476242906366-d8eb64c2f661?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1469&q=80'
+            );
+        }
+        return this._img;
     }
 
-    _createCardDetails() {
-        const cardDetails = document.createElement('div');
-        cardDetails.setAttribute('class', 'card__details');
-        cardDetails.appendChild(this._createTag());
-        cardDetails.appendChild(this._createArticleTitle());
-        cardDetails.appendChild(this._createArticleContent());
-        cardDetails.appendChild(this._createLink());
-        return cardDetails;
-    }
-    _createTag() {
-        const tag = document.createElement('span');
-        tag.setAttribute('class', 'news__tag');
-        tag.innerText = 'tag name';
-        return tag;
+    _createCardDetails(parameter) {
+        this._cardDetails = createElement('div', { class: 'card__details' });
+        this._cardDetails.appendChild(this._createDate(parameter));
+        this._cardDetails.appendChild(this._createArticleTitle(parameter));
+        this._cardDetails.appendChild(this._createArticleContent(parameter));
+        this._cardDetails.appendChild(this._createLink(parameter));
+        return this._cardDetails;
     }
 
-    _createArticleTitle() {
-        const title = document.createElement('div');
-        title.setAttribute('class', 'news__article__title');
-        title.innerText = 'Title';
-        return title;
+    _createDate(parameter) {
+        let data = parameter.publishedAt.slice(0, 10);
+        this._date = createElement('div', { class: 'news__date' }, null, `Published: ${data}`);
+        return this._date;
     }
 
-    _createArticleContent() {
-        const article = document.createElement('p');
-        article.setAttribute('class', 'news__short__content');
-        article.innerText =
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur sodales morbi dignissim sed diam pharetra vitae ipsum odio.'; //kontent z API
-        return article;
+    _createArticleTitle(parameter) {
+        this._articleTitle = createElement(
+            'div',
+            { class: 'news__article__title' },
+            null,
+            parameter.title
+        );
+        return this._articleTitle;
     }
 
-    _createButton() {
-        const button = document.createElement('button');
-        button.setAttribute('class', 'news__read--button');
-        button.innerText = 'Read more';
-        return button;
+    _createArticleContent(parameter) {
+        let data = parameter.description.slice(0, 130);
+        this._article = createElement('p', { class: 'news__short__content' }, null, data);
+        return this._article;
     }
 
-    _createLink() {
-        const link = document.createElement('a');
-        link.setAttribute('href', '#');
-        link.setAttribute('target', '_blank');
-        link.appendChild(this._createButton());
-        return link;
+    _createButton(className, innerTxt, event) {
+        this._button = createElement(
+            'button',
+            { class: className, type: 'button' },
+            event,
+            innerTxt
+        );
+        return this._button;
+    }
+
+    _createLink(parameter) {
+        this._link = createElement('a', {
+            href: `${parameter.url}`,
+            target: '_blank',
+        });
+        this._link.appendChild(this._createButton('news__read--button', 'Read more'));
+        return this._link;
     }
 }
