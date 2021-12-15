@@ -19,13 +19,13 @@ export function createElement(tag, attributes, events, innerText) {
 }
 
 export function createRow() {
-    const row = document.createElement('div');
-    row.classList.add('row');
-    return row;
+    return createElement('div', {
+        class: 'row',
+    });
 }
 
 export function createColumn() {
-    const col = document.createElement('div');
-    col.classList.add('col');
-    return col;
+    return createElement('div', {
+        class: 'col',
+    });
 }
