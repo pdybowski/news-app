@@ -1,5 +1,6 @@
 import { Health, Home, News, Sport, Weather } from './modules';
 import Router from './modules/shared/router';
+import { Spinner } from './shared';
 
 export default class App {
     constructor() {

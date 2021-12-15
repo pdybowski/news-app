@@ -1,6 +1,5 @@
 import { WEATHER_API } from '../../shared/environment';
 import { API } from '../../shared';
-import spinner from '../../shared/spinner';
 
 export class WeatherApi extends API {
     constructor() {
@@ -12,22 +11,15 @@ export class WeatherApi extends API {
     }
 
     getCurrentDayWeather(locationKey) {
-        spinner.showSpinner();
-        return this.fetch(`currentconditions/v1/${locationKey}?`).finally(() =>
-            spinner.hideSpinner()
-        );
+        return this.fetch(`currentconditions/v1/${locationKey}?`);
     }
 
     getFiveDayWeather(locationKey) {
-        spinner.showSpinner();
-        return this.fetch(`forecasts/v1/daily/5day/${locationKey}?metric=true&`).finally(() =>
-            spinner.hideSpinner()
-        );
+        return this.fetch(`forecasts/v1/daily/5day/${locationKey}?metric=true&`);
     }
 
     getCurrentLocationInfo(locationKey) {
-        spinner.showSpinner();
-        return this.fetch(`locations/v1/${locationKey}?`).finally(() => spinner.hideSpinner());
+        return this.fetch(`locations/v1/${locationKey}?`);
     }
 
     getCityList(query) {

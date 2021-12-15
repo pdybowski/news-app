@@ -1,25 +1,21 @@
-const spinner = document.getElementById("loader");
+import { createElement } from '../utils';
 
-let spinnerCount = 0;
-
-function showSpinner() {
-    spinnerCount++;
-    spinner.classList.add('show');
-}
-
-function hideSpinner() {
-    spinnerCount--;
-    if (spinnerCount <= 0) {
-        spinner.classList.remove('show');
+export class Spinner {
+    constructor() {
+        this._createSpinner();
     }
-}
 
+    _createSpinner() {
+        this._spinnerLoader = createElement('div', { id: 'loader', class: 'overlay show' });
+        const spinner = createElement('div', { class: 'spinner' });
+        this._spinnerLoader.append(spinner);
+    }
 
-export default {
-    showSpinner: function () {
-        showSpinner()
-    },
-    hideSpinner: function () {
-        hideSpinner()
-    },
+    showSpinner(targetElement = 'body') {
+        document.querySelector(targetElement).append(this._spinnerLoader);
+    }
+
+    removeSpinner() {
+        this._spinnerLoader.remove();
+    }
 }
