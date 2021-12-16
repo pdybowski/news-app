@@ -1,16 +1,24 @@
 import { WeatherApi } from './weatherApi';
 import { createColumn, createElement, createRow, isDefined } from '../../utils';
 import { Modal, Notification, Spinner } from '../../shared';
-import { WEATHER_COUNTRY_KEY_LS } from './constants';
+import { WEATHER_COUNTRY_KEY_LS, WEATHER_COUNTRY_LABEL_LS } from './constants';
 import './weather.css';
 
 export class Weather {
     constructor() {
         this._viewElement = document.querySelector('#main');
-        if (!isDefined(localStorage.getItem(WEATHER_COUNTRY_KEY_LS))) {
-            localStorage.setItem(WEATHER_COUNTRY_KEY_LS, '274663');
+        if (
+            !isDefined(localStorage.getItem(WEATHER_COUNTRY_KEY_LS)) ||
+            !isDefined(localStorage.getItem(WEATHER_COUNTRY_LABEL_LS))
+        ) {
+            this._setDefaultLocalStorageValues();
         }
         this._api = new WeatherApi();
+    }
+
+    _setDefaultLocalStorageValues() {
+        localStorage.setItem(WEATHER_COUNTRY_KEY_LS, '274663');
+        localStorage.setItem(WEATHER_COUNTRY_LABEL_LS, 'Warsaw, Masovia, Poland');
     }
 
     async start() {
@@ -247,7 +255,8 @@ export class Weather {
                 list: 'datalistOptions',
                 id: 'countrySearch',
                 placeholder: 'Type to search...',
-                value: localStorage.getItem(WEATHER_COUNTRY_KEY_LS),
+                autocomplete: 'off',
+                value: localStorage.getItem(WEATHER_COUNTRY_LABEL_LS),
             },
             { keyup: () => this._getAutocompleteCityList() }
         );
@@ -259,7 +268,7 @@ export class Weather {
                     for: 'countrySearch',
                 },
                 null,
-                'City name'
+                'Location'
             )
         );
 
@@ -273,19 +282,19 @@ export class Weather {
     }
 
     async _getAutocompleteCityList() {
-        this._datalistElement.innerHTML = '';
         if (this._countrySearchElement.value !== '') {
+            this._datalistOptions = new Map();
+            Array.from(this._datalistElement.options).forEach((option) =>
+                this._datalistOptions.set(option.value, option.getAttribute('data-value'))
+            );
+            this._datalistElement.innerHTML = '';
             try {
                 const cityListData = await this._api.getCityList(this._countrySearchElement.value);
                 cityListData.forEach((dataElement) => {
-                    const cityElement = createElement(
-                        'option',
-                        {
-                            value: dataElement.Key,
-                        },
-                        null,
-                        `${dataElement.LocalizedName}, ${dataElement.AdministrativeArea.LocalizedName}, ${dataElement.Country.LocalizedName}`
-                    );
+                    const cityElement = createElement('option', {
+                        'data-value': dataElement.Key,
+                        value: `${dataElement.LocalizedName}, ${dataElement.AdministrativeArea.LocalizedName}, ${dataElement.Country.LocalizedName}`,
+                    });
                     this._datalistElement.append(cityElement);
                 });
             } catch (error) {
@@ -312,7 +321,11 @@ export class Weather {
 
     _updateWeatherConfiguration() {
         return async () => {
-            localStorage.setItem(WEATHER_COUNTRY_KEY_LS, this._countrySearchElement.value);
+            localStorage.setItem(WEATHER_COUNTRY_LABEL_LS, this._countrySearchElement.value);
+            localStorage.setItem(
+                WEATHER_COUNTRY_KEY_LS,
+                this._datalistOptions.get(this._countrySearchElement.value).toString()
+            );
             await this._refreshWeatherContainer();
         };
     }
