@@ -40,8 +40,8 @@ export class News {
     }
 
     _createTitle() {
-        this._title = createElement('h1', { class: 'news__title' }, null, 'The News');
-        this.viewElement.appendChild(this._title);
+        const title = createElement('h1', { class: 'news__title' }, null, 'The News');
+        this.viewElement.appendChild(title);
     }
 
     _searchKeyword() {
