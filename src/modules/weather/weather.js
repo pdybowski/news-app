@@ -13,9 +13,9 @@ export class Weather {
     }
 
     async start() {
+        const spinner = new Spinner();
         try {
-            this._spinner = new Spinner();
-            this._spinner.showSpinner();
+            spinner.showSpinner();
             await this._fetchData();
             this._createMainContainer();
             this._createSettingsContainer();
@@ -23,7 +23,7 @@ export class Weather {
         } catch (error) {
             new Notification().showError('Fetch weather data error', error);
         } finally {
-            this._spinner.removeSpinner();
+            spinner.removeSpinner();
         }
     }
 
@@ -294,15 +294,15 @@ export class Weather {
     }
 
     async _refreshWeatherContainer() {
+        const spinner = new Spinner();
         try {
-            this._spinner = new Spinner();
-            this._spinner.showSpinner('body');
+            spinner.showSpinner();
             await this._fetchData();
             this._createWeatherContainer();
         } catch (error) {
             new Notification().showError('Fetch weather data error', error);
         } finally {
-            this._spinner.removeSpinner();
+            spinner.removeSpinner();
         }
     }
 
