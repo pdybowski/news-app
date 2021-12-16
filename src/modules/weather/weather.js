@@ -1,6 +1,6 @@
 import { WeatherApi } from './weatherApi';
 import { createColumn, createElement, createRow, isDefined } from '../../utils';
-import { Modal, Notification } from '../../shared';
+import { Modal, Notification, Spinner } from '../../shared';
 import { WEATHER_COUNTRY_KEY_LS } from './constants';
 
 export class Weather {
@@ -13,13 +13,17 @@ export class Weather {
     }
 
     async start() {
+        const spinner = new Spinner();
         try {
+            spinner.showSpinner();
             await this._fetchData();
             this._createMainContainer();
             this._createSettingsContainer();
             this._createWeatherContainer();
         } catch (error) {
             new Notification().showError('Fetch weather data error', error);
+        } finally {
+            spinner.removeSpinner();
         }
     }
 
@@ -290,11 +294,15 @@ export class Weather {
     }
 
     async _refreshWeatherContainer() {
+        const spinner = new Spinner();
         try {
+            spinner.showSpinner();
             await this._fetchData();
             this._createWeatherContainer();
         } catch (error) {
             new Notification().showError('Fetch weather data error', error);
+        } finally {
+            spinner.removeSpinner();
         }
     }
 
