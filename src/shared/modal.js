@@ -28,6 +28,16 @@ export class Modal {
         return createElement('button', extendedAttributes, events, innerText);
     }
 
+    static createModalHandlerButton(modalId, attributes, events, innerText) {
+        const extendedAttributes = {
+            'data-bs-toggle': 'modal',
+            'data-bs-target': `#${modalId}`,
+            ...attributes,
+        };
+
+        return createElement('button', extendedAttributes, events, innerText);
+    }
+
     _start() {
         this._createModalContainer();
         this._createDialogElement();

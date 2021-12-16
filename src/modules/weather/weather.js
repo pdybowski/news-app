@@ -200,10 +200,12 @@ export class Weather {
     }
 
     _createSettingsContainer() {
-        const settings = new Modal('weatherModal', 'Weather settings', this._createSettingsBody());
-        settings.create();
+        const modalId = 'weatherModal';
+        if (!isDefined(document.getElementById(modalId))) {
+            new Modal(modalId, 'Weather settings', this._createSettingsBody()).create();
+        }
         const settingsButtonContainer = createElement('div', { class: 'd-flex weather__element' });
-        const settingsButton = settings.createModalHandlerButton({
+        const settingsButton = Modal.createModalHandlerButton(modalId, {
             class: 'btn weather__settings__button justify-content-center align-items-center',
         });
         settingsButton.innerHTML =
