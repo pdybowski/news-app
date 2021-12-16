@@ -1,6 +1,6 @@
 .notification__container {
     width: 300px;
-    position: sticky;
+    position: fixed;
     top: 10%;
     right: 3%;
     display: block;
