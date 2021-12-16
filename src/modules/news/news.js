@@ -20,22 +20,20 @@ export class News {
     }
 
     async _fetchData() {
-        this._topNews = await this._api.getTopNews('top-headlines').then((response) => {
+        await this._api.getTopNews('top-headlines').then((response) => {
             let main = this._createContainer();
             let data = response.articles;
             data.forEach((article) => {
-                console.log(article);
                 main.appendChild(this._createCard(article));
             });
         });
     }
 
     async _searchData(keyword) {
-        this._searchNews = await this._api.getSearchedNews(keyword).then((response) => {
-            let main = this._createContainer();
-            let data = response.articles;
+        await this._api.getSearchedNews(keyword).then((response) => {
+            const main = this._createContainer();
+            const data = response.articles;
             data.forEach((article) => {
-                console.log(article);
                 main.appendChild(this._createCard(article));
             });
         });
@@ -47,8 +45,8 @@ export class News {
     }
 
     _searchKeyword() {
-        let newKeyword = document.querySelector('.news__input').value;
-        let container = document.querySelector('.news__container');
+        const newKeyword = document.querySelector('.news__input').value;
+        const container = document.querySelector('.news__container');
         if (container && newKeyword) {
             this.viewElement.removeChild(container);
             this._searchData(newKeyword);
@@ -56,113 +54,116 @@ export class News {
     }
 
     _createForm() {
-        this._form = createElement('form', { class: 'news__form' });
-        this._form.append(
+        const form = createElement('form', { class: 'news__form' });
+        form.append(
             this._createLabel(),
             this._createInput(),
             this._createButton('news__search--button', 'search', {
                 click: this._searchKeyword.bind(this),
             })
         );
-        this.viewElement.appendChild(this._form);
+        this.viewElement.appendChild(form);
     }
 
     _createLabel() {
-        this._label = createElement('label', { for: 'news__label' });
-        return this._label;
+        return createElement('label', { for: 'news__label' });
     }
 
     _createInput() {
-        this._input = createElement('input', {
+        return createElement('input', {
             type: 'text',
             id: 'news',
             name: 'news',
             class: 'news__input',
         });
-        return this._input;
-    }
-
-    _createInputButton() {
-        const inputButton = this._createButton('news__search--button', 'search');
-        inputButton.addEventListener('click', this._searchKeyword.bind(this));
     }
 
     _createContainer() {
-        this._container = createElement('div', { class: 'news__container' });
-        this.viewElement.appendChild(this._container);
-        return this._container;
+        const container = createElement('div', { class: 'news__container' });
+        this.viewElement.appendChild(container);
+        return container;
     }
 
     _createCard(parameter) {
-        this._card = createElement('div', { class: 'news__card' }, null, null);
-        this._card.appendChild(this._createImg(parameter));
-        this._card.appendChild(this._createCardDetails(parameter));
-        return this._card;
+        const card = createElement('div', { class: 'news__card' }, null, null);
+        card.appendChild(this._createImg(parameter));
+        card.appendChild(this._createCardDetails(parameter));
+        return card;
     }
 
     _createImg(parameter) {
-        this._img = createElement('img', {
+        const img = createElement('img', {
             alt: '',
             class: 'news__img',
         });
-        if (parameter.urlToImage) {
-            this._img.setAttribute('src', `${parameter.urlToImage}`);
+        if (parameter.urlToImage.length) {
+            img.setAttribute('src', `${parameter.urlToImage}`);
         } else {
-            this._img.setAttribute(
+            img.setAttribute(
                 'src',
                 'https://images.unsplash.com/photo-1476242906366-d8eb64c2f661?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1469&q=80'
             );
         }
-        return this._img;
+        return img;
     }
 
     _createCardDetails(parameter) {
-        this._cardDetails = createElement('div', { class: 'card__details' });
-        this._cardDetails.appendChild(this._createDate(parameter));
-        this._cardDetails.appendChild(this._createArticleTitle(parameter));
-        this._cardDetails.appendChild(this._createArticleContent(parameter));
-        this._cardDetails.appendChild(this._createLink(parameter));
-        return this._cardDetails;
+        const cardDetails = createElement('div', { class: 'card__details' });
+        cardDetails.appendChild(this._createDate(parameter));
+        cardDetails.appendChild(this._createArticleTitle(parameter));
+        cardDetails.appendChild(this._createArticleContent(parameter));
+        cardDetails.appendChild(this._createLink(parameter));
+        return cardDetails;
     }
 
     _createDate(parameter) {
-        let data = parameter.publishedAt.slice(0, 10);
-        this._date = createElement('div', { class: 'news__date' }, null, `Published: ${data}`);
-        return this._date;
+        const dataFormat = parameter.publishedAt.slice(0, 10);
+        const date = createElement(
+            'div',
+            { class: 'news__date' },
+            null,
+            `Published: ${dataFormat}`
+        );
+        return date;
     }
 
     _createArticleTitle(parameter) {
-        this._articleTitle = createElement(
+        const articleTitle = createElement(
             'div',
             { class: 'news__article__title' },
             null,
             parameter.title
         );
-        return this._articleTitle;
+        return articleTitle;
     }
 
     _createArticleContent(parameter) {
-        let data = parameter.description.slice(0, 130);
-        this._article = createElement('p', { class: 'news__short__content' }, null, data);
-        return this._article;
+        const textFormat = parameter.description.slice(0, 130);
+        const article = createElement(
+            'p',
+            { class: 'news__short__content' },
+            null,
+            `${textFormat}...`
+        );
+        return article;
     }
 
     _createButton(className, innerTxt, event) {
-        this._button = createElement(
+        const button = createElement(
             'button',
             { class: className, type: 'button' },
             event,
             innerTxt
         );
-        return this._button;
+        return button;
     }
 
     _createLink(parameter) {
-        this._link = createElement('a', {
+        const link = createElement('a', {
             href: `${parameter.url}`,
             target: '_blank',
         });
-        this._link.appendChild(this._createButton('news__read--button', 'Read more'));
-        return this._link;
+        link.appendChild(this._createButton('news__read--button', 'Read more'));
+        return link;
     }
 }
