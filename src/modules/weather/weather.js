@@ -48,13 +48,17 @@ export class Weather {
     }
 
     _createMainContainer() {
-        this._container = createElement('div');
+        this._container = createElement('div', { class: 'main-container' });
         this._viewElement.append(this._container);
     }
 
     _createToday() {
         const currentDayDiv = createElement('div');
-        currentDayDiv.append(this._createCurrentDayInfo(), this._createCurrentDayWeather());
+        currentDayDiv.append(
+            this._createCurrentDayInfo(),
+            this._createCurrentDayWeather(),
+            this._createHourlyCurrentDayWeather()
+        );
         this._weatherContainer.append(currentDayDiv);
     }
 
@@ -100,6 +104,16 @@ export class Weather {
         );
 
         return currentDayWeatherDiv;
+    }
+
+    _createHourlyCurrentDayWeather() {
+        const hourlyCurrentDayWeatherDiv = createElement('div', {
+            class: 'd-flex align-items-center justify-content-start weather__element',
+        });
+
+        hourlyCurrentDayWeatherDiv.append(createElement('h1', null, null, 'yolo'));
+
+        return hourlyCurrentDayWeatherDiv;
     }
 
     _createNextDays() {
