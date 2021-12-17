@@ -9,7 +9,7 @@ export const WEATHER_API = {
 };
 
 export const HEALTH_API = {
-    API_BASE_URL: 'https://coronavirus.m.pipedream.net/',
+    API_BASE_URL: 'https://covid-api.mmediagroup.fr/v1',
 };
 
 export const SPORT_API = {
