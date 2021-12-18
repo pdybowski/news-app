@@ -1,13 +1,28 @@
+import { HealthApi } from './healthApi.js';
+import { Notification } from '../../shared/notifications/notifications';
+import './health.css'
+
+
 export class Health {
     constructor() {
         this.viewElement = document.querySelector('#main');
+        this._api = new HealthApi();
     }
 
-    start() {
-        this._createTitle();
-        this._createSubtitle();
-        this._createSearchForm();
-        this._createResultView();
+    async start() {
+        try { 
+            await this._fetchData();
+            this._createTitle();
+            this._createSubtitle();
+            this._createSearchForm();
+            this._createResultView();
+        } catch (error) {
+            new Notification().showError('Fetch health data error', error);
+        } 
+    }
+
+    async _fetchData() {
+        this._info = await this._api.getInfo();
     }
 
     _createTitle() {
@@ -34,7 +49,6 @@ export class Health {
         searchLocation.setAttribute('class', 'health__btn btn-dark');
 
         searchLocation.innerText = 'Search';
-        // inputLocation.innerHTML = 'nnnn'; // nie działa, trzeba inaczej
 
         searchForm.append(inputLocation, searchLocation);
         this.viewElement.appendChild(searchForm);
