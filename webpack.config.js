@@ -47,6 +47,7 @@ module.exports = {
 
         new HtmlWebpackPlugin({
             title: 'News App',
+            favicon: './src/content/img/favicon.ico',
             template: path.resolve(__dirname, './src/index.html'),
             inject: true,
             filename: './index.html',
