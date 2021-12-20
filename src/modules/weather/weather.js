@@ -7,32 +7,78 @@ import './weather.css';
 export class Weather {
     constructor() {
         this._viewElement = document.querySelector('#main');
-        if (
-            !isDefined(localStorage.getItem(WEATHER_COUNTRY_KEY_LS)) ||
-            !isDefined(localStorage.getItem(WEATHER_COUNTRY_LABEL_LS))
-        ) {
-            this._setDefaultLocalStorageValues();
-        }
         this._api = new WeatherApi();
     }
 
-    _setDefaultLocalStorageValues() {
-        localStorage.setItem(WEATHER_COUNTRY_KEY_LS, '274663');
-        localStorage.setItem(WEATHER_COUNTRY_LABEL_LS, 'Warsaw, Masovia, Poland');
+    async start() {
+        this._createMainContainer();
+        if (this._isLocalStorageSet()) {
+            await this._refreshOrCreateWeatherContent();
+        } else {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    await this._getGeolocationDataAndCreateContent(),
+                    async () => await this._refreshOrCreateWeatherContent(true)
+                );
+            } else {
+                await this._refreshOrCreateWeatherContent(true);
+            }
+        }
     }
 
-    async start() {
+    async _refreshOrCreateWeatherContent(withDefaultLocation = false) {
         const spinner = new Spinner();
         try {
             spinner.showSpinner();
-            await this._fetchData();
-            this._createMainContainer();
-            this._createWeatherContainer();
+            if (withDefaultLocation) {
+                this._setLocalStorageValues();
+            }
+            await this._fetchDataAndCreateContent();
         } catch (error) {
             new Notification().showError('Fetch weather data error', error);
         } finally {
             spinner.removeSpinner();
         }
+    }
+
+    async _getGeolocationDataAndCreateContent() {
+        return async (position) => {
+            const spinner = new Spinner();
+            spinner.showSpinner();
+            try {
+                const response = await this._api.getKeyByGeolocation(
+                    position.coords.latitude,
+                    position.coords.longitude
+                );
+                this._setLocalStorageValues(
+                    response.Key,
+                    `${response.LocalizedName}, ${response.AdministrativeArea.LocalizedName}, ${response.Country.LocalizedName}`
+                );
+            } catch (error) {
+                new Notification().showError('Fetch geolocation data error', error);
+                this._setLocalStorageValues();
+            } finally {
+                await this._fetchDataAndCreateContent();
+                spinner.removeSpinner();
+            }
+        };
+    }
+
+    _isLocalStorageSet() {
+        return (
+            isDefined(localStorage.getItem(WEATHER_COUNTRY_KEY_LS)) &&
+            isDefined(localStorage.getItem(WEATHER_COUNTRY_LABEL_LS))
+        );
+    }
+
+    async _fetchDataAndCreateContent() {
+        await this._fetchData();
+        this._createWeatherContainer();
+    }
+
+    _setLocalStorageValues(key = '274663', label = 'Warsaw, Masovia, Poland') {
+        localStorage.setItem(WEATHER_COUNTRY_KEY_LS, key);
+        localStorage.setItem(WEATHER_COUNTRY_LABEL_LS, label);
     }
 
     async _fetchData() {
@@ -111,7 +157,7 @@ export class Weather {
             class: 'd-flex align-items-center justify-content-start weather__element',
         });
 
-        hourlyCurrentDayWeatherDiv.append(createElement('h1', null, null, 'yolo'));
+        hourlyCurrentDayWeatherDiv.append(createElement('h1', null, null, 'Hourly Weather'));
 
         return hourlyCurrentDayWeatherDiv;
     }
@@ -335,26 +381,12 @@ export class Weather {
 
     _updateWeatherConfiguration() {
         return async () => {
-            localStorage.setItem(WEATHER_COUNTRY_LABEL_LS, this._countrySearchElement.value);
-            localStorage.setItem(
-                WEATHER_COUNTRY_KEY_LS,
-                this._datalistOptions.get(this._countrySearchElement.value).toString()
+            this._setLocalStorageValues(
+                this._datalistOptions.get(this._countrySearchElement.value).toString(),
+                this._countrySearchElement.value
             );
-            await this._refreshWeatherContainer();
+            await this._refreshOrCreateWeatherContent();
         };
-    }
-
-    async _refreshWeatherContainer() {
-        const spinner = new Spinner();
-        try {
-            spinner.showSpinner();
-            await this._fetchData();
-            this._createWeatherContainer();
-        } catch (error) {
-            new Notification().showError('Fetch weather data error', error);
-        } finally {
-            spinner.removeSpinner();
-        }
     }
 
     _createWeatherContainer() {
