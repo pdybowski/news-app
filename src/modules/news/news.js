@@ -1,72 +1,142 @@
 import { NewsApi } from './newsApi';
-import { Notification } from '../../shared/notifications/notifications';
 import { createElement } from '../../utils/createElement';
+import { Notification, Spinner } from '../../shared';
+import './style.css';
 
 export class News {
     constructor() {
         this.viewElement = document.querySelector('#main');
         this._api = new NewsApi();
-        this.start();
     }
 
-    async start() {
-        try {
-            await this._fetchData();
-            this._createTitle();
-            this._createForm();
-        } catch (error) {
-            new Notification().showError('Fetch news data error', error);
-        }
+    start() {
+        this._fetchData();
+        this._createHeader();
+        this._createTitle();
+        this._createForm();
+        this._createContainer();
     }
 
     async _fetchData() {
-        await this._api.getTopNews('top-headlines').then((response) => {
-            let main = this._createContainer();
-            let data = response.articles;
-            data.forEach((article) => {
-                main.appendChild(this._createCard(article));
-            });
-        });
+        const spinner = new Spinner();
+        try {
+            spinner.showSpinner();
+            const array = await this._api.getTopNews('top-headlines');
+            this._data = array.articles;
+            this._createArticlesArray(this._data, 4);
+        } catch (error) {
+            new Notification().showError('Fetch weather data error', error);
+        } finally {
+            spinner.removeSpinner();
+        }
     }
 
     async _searchData(keyword) {
-        await this._api.getSearchedNews(keyword).then((response) => {
-            const main = this._createContainer();
-            const data = response.articles;
-            data.forEach((article) => {
-                main.appendChild(this._createCard(article));
+        const spinner = new Spinner();
+        try {
+            spinner.showSpinner();
+            const user_array = await this._api.getSearchedNews(keyword);
+            this.user_data = user_array.articles;
+            this._createArticlesArray(this.user_data, 4);
+        } catch (error) {
+            new Notification().showError('Fetch weather data error', error);
+        } finally {
+            spinner.removeSpinner();
+        }
+    }
+
+    _searchKeyword() {
+        const cards = document.querySelectorAll('.news__card');
+        const input = document.querySelector('.news__input');
+        const newKeyword = input.value;
+        if (this._container && newKeyword) {
+            cards.forEach((i) => {
+                this._container.removeChild(i);
             });
+            this._searchData(newKeyword);
+        }
+        this._footer ? this.viewElement.removeChild(this._footer) : null;
+        input.value = null;
+    }
+
+    _createArticlesArray(data, size) {
+        this._pageSize = size;
+        this._arrayOfArticles = [];
+        for (var i = 0; i < data.length; i += this._pageSize) {
+            this._arrayOfArticles.push(data.slice(i, i + this._pageSize));
+        }
+        this._createFooter(this._arrayOfArticles);
+        this._displayArticles(); // displays article after view is rendered
+    }
+
+    _displayArticles(number = 0, array = this._arrayOfArticles) {
+        for (let i = 0; i < this._pageSize; i++) {
+            this._container.appendChild(this._createCard(array[number][i]));
+        }
+    }
+
+    _insertPageNumber(number) {
+        const cards = document.querySelectorAll('.news__card');
+        cards.forEach((i) => {
+            this._container.removeChild(i);
         });
+        this._displayArticles(number);
+    }
+
+    _createFooter(array) {
+        this._footer = createElement('div', { class: 'footer news_footer' }, null, null);
+        for (let i = 0; i < array.length; i++) {
+            this._pageNumber = createElement(
+                'button',
+                {
+                    id: `${i + 1}`,
+                    class: 'btn btn-light page__number',
+                    value: `${i + 1}`,
+                },
+                {
+                    click: this._insertPageNumber.bind(this, i, array),
+                },
+                `${i + 1}`
+            );
+            this._footer.appendChild(this._pageNumber);
+        }
+        this.viewElement.appendChild(this._footer);
+    }
+
+    _createHeader() {
+        this._header = createElement('div', {
+            class: 'row  news__header',
+        });
+        this.viewElement.appendChild(this._header);
     }
 
     _createTitle() {
         const title = createElement('h1', { class: 'news__title' }, null, 'The News');
-        this.viewElement.appendChild(title);
-    }
-
-    _searchKeyword() {
-        const newKeyword = document.querySelector('.news__input').value;
-        const container = document.querySelector('.news__container');
-        if (container && newKeyword) {
-            this.viewElement.removeChild(container);
-            this._searchData(newKeyword);
-        }
+        const column = createElement('div', {
+            class: 'col-12 col-md-6 d-flex justify-content-md-start justify-content-center',
+        });
+        column.appendChild(title);
+        this._header.appendChild(column);
     }
 
     _createForm() {
-        const form = createElement('form', { class: 'news__form' });
+        const form = createElement('form', {
+            class: 'd-flex justify-content-md-end justify-content-center news__form',
+        });
         form.append(
             this._createLabel(),
             this._createInput(),
-            this._createButton('news__search--button', 'search', {
+            this._createButton('btn btn-light', 'search', {
                 click: this._searchKeyword.bind(this),
             })
         );
-        this.viewElement.appendChild(form);
+        const column = createElement('div', { class: 'col' });
+        column.appendChild(form);
+        this._header.appendChild(column);
     }
 
     _createLabel() {
-        return createElement('label', { for: 'news__label' });
+        return createElement('label', { for: 'search', class: 'form-label' });
     }
 
     _createInput() {
@@ -74,21 +144,22 @@ export class News {
             type: 'text',
             id: 'news',
             name: 'news',
-            class: 'news__input',
+            placeholder: 'keyword',
+            class: 'form-control news__input',
         });
     }
 
     _createContainer() {
-        const container = createElement('div', { class: 'news__container' });
-        this.viewElement.appendChild(container);
-        return container;
+        this._container = createElement('div', { class: 'row news__container' });
+        this.viewElement.appendChild(this._container);
+        return this._container;
     }
 
     _createCard(parameter) {
-        const card = createElement('div', { class: 'news__card' }, null, null);
-        card.appendChild(this._createImg(parameter));
-        card.appendChild(this._createCardDetails(parameter));
-        return card;
+        this._card = createElement('div', { class: 'col-xs news__card' }, null, null);
+        this._card.appendChild(this._createImg(parameter));
+        this._card.appendChild(this._createCardDetails(parameter));
+        return this._card;
     }
 
     _createImg(parameter) {
@@ -96,14 +167,23 @@ export class News {
             alt: '',
             class: 'news__img',
         });
-        if (parameter.urlToImage.length) {
-            img.setAttribute('src', `${parameter.urlToImage}`);
-        } else {
+        try {
+            if (parameter.urlToImage) {
+                img.setAttribute('src', `${parameter.urlToImage}`);
+            } else {
+                img.setAttribute(
+                    'src',
+                    'https://images.unsplash.com/photo-1476242906366-d8eb64c2f661?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1469&q=80'
+                );
+            }
+        } catch (error) {
+            console.log(error);
             img.setAttribute(
                 'src',
                 'https://images.unsplash.com/photo-1476242906366-d8eb64c2f661?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1469&q=80'
             );
         }
+
         return img;
     }
 
@@ -128,34 +208,49 @@ export class News {
     }
 
     _createArticleTitle(parameter) {
-        const articleTitle = createElement(
-            'div',
-            { class: 'news__article__title' },
-            null,
-            parameter.title
-        );
+        const text = parameter.title;
+        let input;
+        if (text) {
+            input = text.length > 130 ? `${text.slice(0, 132)}...` : text;
+        } else {
+            input = text;
+        }
+        const articleTitle = createElement('div', { class: 'news__article__title' }, null, input);
         return articleTitle;
     }
 
     _createArticleContent(parameter) {
-        const textFormat = parameter.description.slice(0, 130);
+        const text = parameter.description;
+        let input;
+        if (text) {
+            input = text.length > 210 ? `${text.slice(0, 210)}...` : text;
+        } else {
+            input = text;
+        }
+
         const article = createElement(
             'p',
-            { class: 'news__short__content' },
+            { class: 'news__short__content overflow-hidden' },
             null,
-            `${textFormat}...`
+            input
         );
         return article;
     }
 
-    _createButton(className, innerTxt, event) {
+    _createButton(className, innerText, event) {
         const button = createElement(
             'button',
             { class: className, type: 'button' },
             event,
-            innerTxt
+            innerText
         );
         return button;
+    }
+
+    _createCardFooter() {
+        const footer = createElement('div', { class: 'footer' }, null, null);
+        footer.appendChild(this._createButton('btn btn-dark news__read--button', 'Read more'));
+        return footer;
     }
 
     _createLink(parameter) {
@@ -163,7 +258,7 @@ export class News {
             href: `${parameter.url}`,
             target: '_blank',
         });
-        link.appendChild(this._createButton('news__read--button', 'Read more'));
+        link.appendChild(this._createCardFooter());
         return link;
     }
 }
