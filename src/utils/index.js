@@ -1,3 +1,3 @@
 export * from './createElement';
 export * from './isDefined';
-export * from './polishAccents';
+export * from './replacePolishAccents';
