@@ -31,4 +31,8 @@ export class WeatherApi extends API {
             `locations/v1/cities/geoposition/search?q=${lat}%2C${lon}&toplevel=true&`
         );
     }
+
+    getHourlyWeather(locationKey) {
+        return this.fetch(`forecasts/v1/hourly/12hour/${locationKey}?metric=true&`);
+    }
 }

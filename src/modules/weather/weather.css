@@ -14,7 +14,7 @@
     color: #686666;
 }
 
-.main-container {
+.weather__main-container {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -22,7 +22,7 @@
 }
 
 @media screen and (max-width: 600px) {
-    .main-container {
+    .weather__main-container {
         position: static;
         transform: none;
     }

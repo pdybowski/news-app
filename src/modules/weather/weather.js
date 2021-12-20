@@ -91,10 +91,13 @@ export class Weather {
         this._currentLocationInfo = await this._api.getCurrentLocationInfo(
             localStorage.getItem(WEATHER_COUNTRY_KEY_LS)
         );
+        this._hourlyWeather = await this._api.getHourlyWeather(
+            localStorage.getItem(WEATHER_COUNTRY_KEY_LS)
+        );
     }
 
     _createMainContainer() {
-        this._container = createElement('div', { class: 'main-container' });
+        this._container = createElement('div', { class: 'weather__main-container' });
         this._viewElement.append(this._container);
     }
 
@@ -154,11 +157,36 @@ export class Weather {
 
     _createHourlyCurrentDayWeather() {
         const hourlyCurrentDayWeatherDiv = createElement('div', {
-            class: 'd-flex align-items-center justify-content-start weather__element',
+            class: 'd-flex flex-column align-items-start justify-content-center weather__element',
         });
+        hourlyCurrentDayWeatherDiv.append(
+            createElement('h2', { class: 'ps-3' }, null, 'Hourly Weather')
+        );
 
-        hourlyCurrentDayWeatherDiv.append(createElement('h1', null, null, 'Hourly Weather'));
+        const hourlyDiv = createElement('div', {
+            class: 'd-flex justify-content-between col-12 px-3 ',
+        });
+        console.log(this._hourlyWeather[8]);
 
+        for (let i = 1; i <= 7; i += 2) {
+            const parentElement = createElement('div', { class: 'd-flex flex-column' });
+
+            const tempElement = createElement('div', { class: 'fs-5 fw-bold text-center' });
+            tempElement.append(`${this._hourlyWeather[i].Temperature.Value}°C`);
+            parentElement.append(tempElement);
+
+            const hourElement = createElement('div', { class: 'text-center' });
+            hourElement.append(
+                `${String(new Date(this._hourlyWeather[i].DateTime).getHours()).padStart(
+                    2,
+                    '0'
+                )}:00`
+            );
+            parentElement.append(hourElement);
+            hourlyDiv.append(parentElement);
+        }
+
+        hourlyCurrentDayWeatherDiv.append(hourlyDiv);
         return hourlyCurrentDayWeatherDiv;
     }
 
