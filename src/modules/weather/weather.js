@@ -274,7 +274,12 @@ export class Weather {
     _createSettingsContainer() {
         const modalId = 'weatherModal';
         if (!isDefined(document.getElementById(modalId))) {
-            new Modal(modalId, 'Weather settings', this._createSettingsBody()).create();
+            new Modal(
+                modalId,
+                'Weather settings',
+                this._createSettingsBody(),
+                this._createSearchCountrySaveAndCloseButton()
+            ).create();
         }
         const settingsButtonContainer = createElement('div', { class: 'd-flex weather__element' });
         const settingsButton = Modal.createModalHandlerButton(modalId, {
@@ -301,13 +306,12 @@ export class Weather {
         });
 
         this._createSearchCountryInput();
-        this._createSearchCountrySaveButton();
 
         this._settingsBody.append(this._setingsFormElement);
     }
 
     _createSearchCountryInput() {
-        const countrySearchContainer = createElement('div', { class: 'form-floating col ps-0' });
+        const countrySearchContainer = createElement('div', { class: 'form-floating col px-0' });
         this._countrySearchElement = createElement(
             'input',
             {
@@ -363,19 +367,18 @@ export class Weather {
         }
     }
 
-    _createSearchCountrySaveButton() {
-        this._setingsFormElement.append(
-            createElement(
-                'button',
-                {
-                    type: 'button',
-                    class: 'btn btn-primary col-2',
-                },
-                {
-                    click: this._updateWeatherConfiguration(),
-                },
-                'Save'
-            )
+    _createSearchCountrySaveAndCloseButton() {
+        return createElement(
+            'button',
+            {
+                type: 'button',
+                class: 'btn btn-primary col-3',
+                'data-bs-dismiss': 'modal',
+            },
+            {
+                click: this._updateWeatherConfiguration(),
+            },
+            'Save & Close'
         );
     }
 
