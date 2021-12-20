@@ -11,10 +11,10 @@ export class NewsApi extends API {
     }
 
     getTopNews(header) {
-        return this.fetch(`${header}?language=en&pageSize=5`);
+        return this.fetch(`${header}?language=en`);
     }
 
     getSearchedNews(keyword) {
-        return this.fetch(`everything?language=en&pageSize=5&q=${keyword}`);
+        return this.fetch(`everything?language=en&q=${keyword}`);
     }
 }
