@@ -1,5 +1,6 @@
 import { GOVERNMENT_API } from '../../shared/environment';
 import { API } from '../../shared';
+import { replacePolishAccents } from '../../utils/replacePolishAccents';
 
 export class GovApi extends API {
     constructor() {
@@ -13,6 +14,7 @@ export class GovApi extends API {
     }
 
     getItemByQuery(query) {
+        replacePolishAccents(query);
         return this.fetch(`q=${query}&`);
     }
 
