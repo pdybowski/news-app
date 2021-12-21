@@ -1,9 +1,30 @@
 import { FootballApi } from './footballApi';
 import { createElement } from '../../utils/createElement';
+import { Notification, Spinner } from '../../shared';
 
 export class Sport {
     constructor() {
         this.mainBox = document.querySelector('#main');
+        this._api = new FootballApi();
+    }
+
+    start() {
+        this._fetchData();
+    }
+
+
+    async _fetchData() {
+        const spinner = new Spinner();
+        try {
+            spinner.showSpinner();
+            const leaguesData = await this._api.getLeagues();
+            this._data = leaguesData.data;
+            this._createLeaguesContainer(this._data);
+        } catch (error) {
+            new Notification().showError('Fetch weather data error', error);
+        } finally {
+            spinner.removeSpinner();
+        }
     }
 
     _createMainContainer() {
@@ -11,10 +32,12 @@ export class Sport {
         this.mainBox.append(this.container);
     }
 
-    _createLeaguesContainer() {
+    _createLeaguesContainer(fetchedData) {
         const leaguesContainer = createElement('div', { class: 'Leagues__container' });
 
-        // loop for leages 
+        fetchedData.forEach((league) => {
+            _createLeagueBox(league.name, league.logos.light, league.id)
+        })
 
         this.mainBox.append(leaguesContainer);
     }
