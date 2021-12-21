@@ -21,9 +21,20 @@
     transform: translate(-50%, -50%);
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 650px) {
     .weather__main-container {
         position: static;
         transform: none;
+    }
+
+    .weather__element--center {
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+@media screen and (min-width: 650px) {
+    .weather__element--center {
+        justify-content: flex-start;
     }
 }

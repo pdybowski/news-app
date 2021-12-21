@@ -137,7 +137,7 @@ export class Weather {
 
     _createCurrentDayWeather() {
         const currentDayWeatherDiv = createElement('div', {
-            class: 'd-flex align-items-center justify-content-start weather__element',
+            class: 'd-flex align-items-center weather__element weather__element--center',
         });
 
         const dailyForecast = this._fiveDayWeather.DailyForecasts[0];
@@ -166,7 +166,6 @@ export class Weather {
         const hourlyDiv = createElement('div', {
             class: 'd-flex justify-content-between col-12 px-3 ',
         });
-        console.log(this._hourlyWeather[8]);
 
         for (let i = 1; i <= 7; i += 2) {
             const parentElement = createElement('div', { class: 'd-flex flex-column' });
@@ -236,7 +235,7 @@ export class Weather {
 
     _createTemperatureRange(maxTemperature, minTemperature, isHorizontal = false) {
         const temperatureRangeDiv = isHorizontal
-            ? createElement('div', { class: 'col-12 col-sm-4' })
+            ? createElement('div', { class: 'col-12 col-sm-4 weather__element--center' })
             : createRow();
 
         const maxTempDiv = this._createTemperature(maxTemperature);
@@ -255,7 +254,9 @@ export class Weather {
 
     _createFirstElement(value, isHorizontal = false) {
         const firstElementDiv = isHorizontal
-            ? createElement('div', { class: 'fs-1 fw-bold col-12 col-sm-4' })
+            ? createElement('div', {
+                  class: 'fs-1 fw-bold col-12 col-sm-4 weather__element--center',
+              })
             : createElement('div');
 
         switch (value) {
@@ -290,7 +291,7 @@ export class Weather {
 
     _createWeatherIcon(iconId, isHorizontal = false) {
         const weatherIconDiv = isHorizontal
-            ? createElement('div', { class: 'col-12 col-sm-4' })
+            ? createElement('div', { class: 'col-12 col-sm-4 weather__element--center' })
             : createElement('div');
         const img = createElement('img', {
             src: `./content/img/weather/${iconId}-s.png`,
