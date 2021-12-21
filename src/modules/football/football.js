@@ -1,3 +1,6 @@
+import { FootballApi } from './footballApi';
+import { createElement } from '../../utils/createElement';
+
 export class Sport {
     constructor() {
         this.mainBox = document.querySelector('#main');
