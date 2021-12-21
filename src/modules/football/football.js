@@ -17,11 +17,13 @@ export class Sport {
         const spinner = new Spinner();
         try {
             spinner.showSpinner();
-            const leaguesData = await this._api.getLeagues();
-            this._data = leaguesData.data;
-            this._createLeaguesContainer(this._data);
+            const fetchedData = await this._api.getLeagues('leagues');
+            const leaguesData = fetchedData.data
+            console.log(leaguesData)
+            this._createLeaguesContainer(leaguesData);
         } catch (error) {
-            new Notification().showError('Fetch weather data error', error);
+            new Notification().showError('Fetch football data error', error);
+            console.log(error)
         } finally {
             spinner.removeSpinner();
         }
@@ -32,22 +34,26 @@ export class Sport {
         this.mainBox.append(this.container);
     }
 
+    _createLeagueBox(fulllLagueName, imageSrc, elementID) {
+        const id = elementID
+        const leagueBox = createElement('div', { class: 'leagues__box' });
+        const logo = createElement('img', { class: 'leagues__box--image', src: imageSrc });
+        const leagueName = createElement('h2', { class: 'leagues__box--name' });
+        leagueName.innerText = fulllLagueName;
+        leagueBox.appendChild(logo);
+        leagueBox.appendChild(leagueName);
+        return leagueBox
+    }
+
     _createLeaguesContainer(fetchedData) {
         const leaguesContainer = createElement('div', { class: 'Leagues__container' });
 
-        fetchedData.forEach((league) => {
-            _createLeagueBox(league.name, league.logos.light, league.id)
-        })
+        for (const league of fetchedData) {
+            console.log(league.name, league.logos.light, league.id)
+            const leagueBox = this._createLeagueBox(league.name, league.logos.light, league.id)
+            leaguesContainer.appendChild(leagueBox);
+        }
 
         this.mainBox.append(leaguesContainer);
-    }
-
-    _createLeagueBox(imageSrc, fulllLagueName) {
-        const leagueBox = createElement('div', { class: 'leagues__box' });
-        const logo = createElement('img', { class: 'leagues__box--image', src: imageSrc});
-        const leagueName = createElement('h2', { class: 'leagues__box--name'});
-        leagueName.innerText = fulllLagueName;
-        leagueBox.append(logo, leagueName);
-        this.leaguesContainer.append(leagueBox);
     }
 }
