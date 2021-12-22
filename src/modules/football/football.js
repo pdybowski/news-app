@@ -83,24 +83,104 @@ export class Sport {
         }
     }
 
-    _clearMainBox(){
+    _clearMainBox() {
         this.mainBox.innerHTML = '';
     }
 
-    _createLeagueHeader(data){
+    _createLeagueHeader(data) {
         this._createHeader(data.name);
-        const leagueYear = createElement('p', { class: 'leagueHeader__season'});
+        const leagueYear = createElement('p', { class: 'leagueHeader__season' });
         leagueYear.innerText = `Season: ${data.season}`;
         this.mainBox.appendChild(leagueYear);
     }
 
-    _createOneLeagueContent(fetchedData){
+    _createOneLeagueContent(fetchedData) {
+        console.log('fetchedData', fetchedData)
         this._createLeagueHeader(fetchedData)
-        this._createTableWithDetails()
+        this._createTableWithDetails(fetchedData)
+    }
+
+    _createTableHead() {
+        const results = ['Club', 'Wins', 'Losses', 'Draws', 'Games Played', 'Points', 'Rank']
+        const tableHead = createElement('thead', { class: 'league__tableHead' });
+        const tr = createElement('tr');
+
+        results.forEach((item) => {
+            const th = createElement('th');
+            th.innerText = item
+            return tr.appendChild(th)
+        })
+
+        tableHead.appendChild(tr);
+        return tableHead;
+    }
+
+    _createTableContent(data) {
+        const tbody = createElement('tbody', { class: 'league__tableBody' });
+        const clubsStats = data.standings
+
+        for (const club of clubsStats) {
+            const oneTableRow = createElement('tr');
+            const clubName = createElement('td');
+            const wins = createElement('td');
+            const losses = createElement('td');
+            const draws = createElement('td');
+            const gamesPlayed = createElement('td');
+            const points = createElement('td');
+            const rank = createElement('td');
+
+            clubName.innerText = club.team.name
+
+            for (let oneStatistic of club.stats) {
+                switch (oneStatistic.name) {
+                    case 'wins':
+                        wins.innerText = oneStatistic.value;
+                    case 'losses':
+                        losses.innerText = oneStatistic.value;
+                    case 'ties':
+                        draws.innerText = oneStatistic.value;
+                    case 'gamesPlayed':
+                        gamesPlayed.innerText = oneStatistic.value;
+                    case 'points':
+                        points.innerText = oneStatistic.value;
+                    case 'rank':
+                        rank.innerText = oneStatistic.value;
+                    default:
+                        console.log(`Sorry, we are out of ${oneStatistic}.`);
+                }
+            }
+
+            // for (let i = 0; i <= club.stats.length; i++){
+            //     if(club.stats[i].name = 'wins') console.log(club.stats[i].value)
+            //     if(club.stats[i].name = 'losses') losses.innerText = club.stats[i].value;
+            //     if(club.stats[i].name = 'ties') draws.innerText = club.stats[i].value;
+            //     if(club.stats[i].name = 'gamesPlayed') gamesPlayed.innerText = club.stats[i].value;
+            //     if(club.stats[i].name = 'points') points.innerText = club.stats[i].value;
+            //     if(club.stats[i].name = 'rank') rank.innerText = club.stats[i].value;
+            // }
+
+            oneTableRow.appendChild(clubName);
+            oneTableRow.appendChild(wins);
+            oneTableRow.appendChild(losses);
+            oneTableRow.appendChild(draws);
+            oneTableRow.appendChild(gamesPlayed);
+            oneTableRow.appendChild(points);
+            oneTableRow.appendChild(rank);
+
+
+            return tbody.appendChild(oneTableRow)
+        }
+        return tbody
     }
 
     _createTableWithDetails(fetchedData) {
-        
+        const table = createElement('table', { class: 'league__table' });
+        const tableHeader = this._createTableHead()
+        const tableBody = this._createTableContent(fetchedData)
+
+        table.appendChild(tableHeader);
+        table.appendChild(tableBody);
+        this.mainBox.appendChild(table);
     }
 
     _createLeaguesContainer(fetchedData) {
