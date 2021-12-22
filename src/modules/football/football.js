@@ -12,7 +12,7 @@ export class Sport {
 
     start() {
         this._fetchData();
-        this._createHeader();
+        this._createHeader('Football Leagues!');
     }
 
 
@@ -22,7 +22,6 @@ export class Sport {
             spinner.showSpinner();
             const fetchedData = await this._api.getLeagues('leagues');
             const leaguesData = fetchedData.data
-            console.log(leaguesData)
             this._createLeaguesContainer(leaguesData);
         } catch (error) {
             new Notification().showError('Fetch football data error', error);
@@ -32,20 +31,16 @@ export class Sport {
         }
     }
 
-    _createHeader() {
+    _createHeader(text) {
         this._header = createElement('div', {
-            class: 'row  football__header',
+            class: 'football__header',
         });
-        this._createTitle('Football Leagues!');
+        this._createTitle(text);
         this.mainBox.appendChild(this._header);
     }
     _createTitle(sectionTitle) {
         const title = createElement('h1', { class: 'football__title' }, null, sectionTitle);
-        const column = createElement('div', {
-            class: 'col-12 col-md-6 d-flex justify-content-md-start justify-content-center',
-        });
-        column.appendChild(title);
-        this._header.appendChild(column);
+        this._header.appendChild(title);
     }
 
     _createLeagueBox(fulllLagueName, imageSrc, elementID) {
@@ -60,11 +55,9 @@ export class Sport {
                 id: elementID,
                 class: 'leagues__box--button rounded-2',
             },
-            {
-                click: this._fetchDataForLeague.bind(this),
-            }
         );
         button.innerText = 'Check the table!';
+        button.addEventListener('click', () => this._fetchDataForLeague(elementID))
         leagueName.innerText = fulllLagueName;
         leagueBox.appendChild(logo);
         leagueBox.appendChild(leagueName);
@@ -76,11 +69,12 @@ export class Sport {
         const spinner = new Spinner();
         try {
             spinner.showSpinner();
-            // this.mainBox - clear mainbox
+            this._clearMainBox()
             const fetchedLeagueData = await this._api.getSecificLeague(elementID);
             const leagueData = fetchedLeagueData.data
+            console.log(leagueData)
 
-            this._createTableWithDetails(leagueData)
+            this._createOneLeagueContent(leagueData)
         } catch (error) {
             new Notification().showError('Fetch football league data error', error);
             console.log(error)
@@ -89,8 +83,24 @@ export class Sport {
         }
     }
 
-    _createTableWithDetails() {
+    _clearMainBox(){
+        this.mainBox.innerHTML = '';
+    }
 
+    _createLeagueHeader(data){
+        this._createHeader(data.name);
+        const leagueYear = createElement('p', { class: 'leagueHeader__season'});
+        leagueYear.innerText = `Season: ${data.season}`;
+        this.mainBox.appendChild(leagueYear);
+    }
+
+    _createOneLeagueContent(fetchedData){
+        this._createLeagueHeader(fetchedData)
+        this._createTableWithDetails()
+    }
+
+    _createTableWithDetails(fetchedData) {
+        
     }
 
     _createLeaguesContainer(fetchedData) {
@@ -99,7 +109,6 @@ export class Sport {
         });
 
         for (const league of fetchedData) {
-            console.log(league.name, league.logos.light, league.id)
             const leagueBox = this._createLeagueBox(league.name, league.logos.light, league.id)
             leaguesContainer.appendChild(leagueBox);
         }

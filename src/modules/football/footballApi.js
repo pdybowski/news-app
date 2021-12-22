@@ -15,6 +15,6 @@ export class FootballApi extends API {
     }
 
     getSecificLeague(leagueID, season = 2021) {
-        return this.fetch(`/leagues/${leagueID}/standings?season=${season}&sort=asc`);
+        return this.fetch(`leagues/${leagueID}/standings?season=${season}&sort=asc`);
     }
 };
