@@ -1,5 +1,8 @@
+.football__header{
+    padding: 25px;
+}
+
 .leagues__container{
-    margin-bottom: 150px;
     background-color: white;
     overflow: scroll;
     height: auto;

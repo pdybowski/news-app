@@ -48,21 +48,22 @@ export class Sport {
         this._header.appendChild(column);
     }
 
-    _createMainContainer() {
-        this.container = createElement('div', { class: 'football__main-container' });
-        this.mainBox.append(this.container);
-    }
-
     _createLeagueBox(fulllLagueName, imageSrc, elementID) {
-        const id = elementID
-        const leagueBox = createElement('div', { 
-            class: 'leagues__box p-2 bd-highlight d-flex flex-column justify-content-between rounded-3' 
+        const leagueBox = createElement('div', {
+            class: 'leagues__box p-2 bd-highlight d-flex flex-column justify-content-between rounded-3'
         });
         const logo = createElement('img', { class: 'leagues__box--image', src: imageSrc });
         const leagueName = createElement('p', { class: 'leagues__box--name text-center' });
-        const button = createElement('button', { 
-            class: 'leagues__box--button rounded-2' 
-        });
+        const button = createElement(
+            'button',
+            {
+                id: elementID,
+                class: 'leagues__box--button rounded-2',
+            },
+            {
+                click: this._fetchDataForLeague.bind(this),
+            }
+        );
         button.innerText = 'Check the table!';
         leagueName.innerText = fulllLagueName;
         leagueBox.appendChild(logo);
@@ -71,9 +72,30 @@ export class Sport {
         return leagueBox
     }
 
+    async _fetchDataForLeague(elementID) {
+        const spinner = new Spinner();
+        try {
+            spinner.showSpinner();
+            // this.mainBox - clear mainbox
+            const fetchedLeagueData = await this._api.getSecificLeague(elementID);
+            const leagueData = fetchedLeagueData.data
+
+            this._createTableWithDetails(leagueData)
+        } catch (error) {
+            new Notification().showError('Fetch football league data error', error);
+            console.log(error)
+        } finally {
+            spinner.removeSpinner();
+        }
+    }
+
+    _createTableWithDetails() {
+
+    }
+
     _createLeaguesContainer(fetchedData) {
-        const leaguesContainer = createElement('div', { 
-            class: 'leagues__container d-flex p-2 bd-highlight justify-content-between align-self-center' 
+        const leaguesContainer = createElement('div', {
+            class: 'leagues__container d-flex p-2 bd-highlight justify-content-between align-self-center'
         });
 
         for (const league of fetchedData) {
