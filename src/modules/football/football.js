@@ -56,13 +56,18 @@ export class Sport {
     _createLeagueBox(fulllLagueName, imageSrc, elementID) {
         const id = elementID
         const leagueBox = createElement('div', { 
-            class: 'leagues__box p-2 bd-highlight d-flex flex-column rounded-3' 
+            class: 'leagues__box p-2 bd-highlight d-flex flex-column justify-content-between rounded-3' 
         });
         const logo = createElement('img', { class: 'leagues__box--image', src: imageSrc });
         const leagueName = createElement('p', { class: 'leagues__box--name text-center' });
+        const button = createElement('button', { 
+            class: 'leagues__box--button rounded-2' 
+        });
+        button.innerText = 'Check the table!';
         leagueName.innerText = fulllLagueName;
         leagueBox.appendChild(logo);
         leagueBox.appendChild(leagueName);
+        leagueBox.appendChild(button);
         return leagueBox
     }
 
