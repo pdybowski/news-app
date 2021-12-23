@@ -146,18 +146,9 @@ export class Sport {
                     case 'rank':
                         rank.innerText = oneStatistic.value;
                     default:
-                        console.log(`Sorry, we are out of ${oneStatistic}.`);
+                        break;
                 }
             }
-
-            // for (let i = 0; i <= club.stats.length; i++){
-            //     if(club.stats[i].name = 'wins') console.log(club.stats[i].value)
-            //     if(club.stats[i].name = 'losses') losses.innerText = club.stats[i].value;
-            //     if(club.stats[i].name = 'ties') draws.innerText = club.stats[i].value;
-            //     if(club.stats[i].name = 'gamesPlayed') gamesPlayed.innerText = club.stats[i].value;
-            //     if(club.stats[i].name = 'points') points.innerText = club.stats[i].value;
-            //     if(club.stats[i].name = 'rank') rank.innerText = club.stats[i].value;
-            // }
 
             oneTableRow.appendChild(clubName);
             oneTableRow.appendChild(wins);
@@ -168,19 +159,22 @@ export class Sport {
             oneTableRow.appendChild(rank);
 
 
-            return tbody.appendChild(oneTableRow)
+            tbody.appendChild(oneTableRow)
         }
         return tbody
     }
 
     _createTableWithDetails(fetchedData) {
-        const table = createElement('table', { class: 'league__table' });
-        const tableHeader = this._createTableHead()
-        const tableBody = this._createTableContent(fetchedData)
+        const tableContainer = createElement('div', { class: 'league__table-container' });
+        const table = createElement('table', { class: 'league__table table table-success table-striped' });
+        const tableHeader = this._createTableHead();
+        const tableBody = this._createTableContent(fetchedData);
+
 
         table.appendChild(tableHeader);
         table.appendChild(tableBody);
-        this.mainBox.appendChild(table);
+        tableContainer.appendChild(table)
+        this.mainBox.appendChild(tableContainer);
     }
 
     _createLeaguesContainer(fetchedData) {

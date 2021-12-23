@@ -59,3 +59,12 @@
     color: rgb(255, 253, 253);
     box-shadow: inset 400px 0 0 0 #3d3947;
 }
+
+.league__table-container{
+    max-height: 70vh;
+    overflow: scroll;
+}
+
+.league__table{
+
+}
