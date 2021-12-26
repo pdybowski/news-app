@@ -170,10 +170,10 @@ export class Sport {
         const tableHeader = this._createTableHead();
         const tableBody = this._createTableContent(fetchedData);
 
-
         table.appendChild(tableHeader);
         table.appendChild(tableBody);
         tableContainer.appendChild(table)
+        tableContainer.appendChild(this._createArrowBack( () => this.start ))
         this.mainBox.appendChild(tableContainer);
     }
 
@@ -188,5 +188,15 @@ export class Sport {
         }
 
         this.mainBox.append(leaguesContainer);
+    }
+
+    _createArrowBack(callback){
+        const arrowBack = createElement('i', {
+            class: 'bi bi-arrow-90deg-left bootstarp__icon--arrow',
+            style: 'color: black',
+        });
+        arrowBack.addEventListener('click', callback)
+
+        return arrowBack
     }
 }
