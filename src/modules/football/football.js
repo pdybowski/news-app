@@ -72,7 +72,6 @@ export class Sport {
             this._clearMainBox()
             const fetchedLeagueData = await this._api.getSecificLeague(elementID);
             const leagueData = fetchedLeagueData.data
-            console.log(leagueData)
 
             this._createOneLeagueContent(leagueData)
         } catch (error) {
@@ -89,9 +88,27 @@ export class Sport {
 
     _createLeagueHeader(data) {
         this._createHeader(data.name);
-        const leagueYear = createElement('p', { class: 'leagueHeader__season' });
-        leagueYear.innerText = `Season: ${data.season}`;
-        this.mainBox.appendChild(leagueYear);
+        const seasonsList = createElement('span', { class: 'season__list' });
+        const seasonsContainer = createElement('div', { class: 'season__container' });
+        const leagueYear = createElement('ul', { class: 'leagueHeader__season' });
+        const currentLeagueYear = createElement('li', { class: 'leagueHeader__season--year' });
+        currentLeagueYear.innerText = data.season
+        leagueYear.appendChild(currentLeagueYear)
+
+        const year2020 = createElement('li', { class: 'leagueHeader__season--year' });
+        year2020.innerText = '2020'
+        leagueYear.appendChild(year2020)
+        const year2019 = createElement('li', { class: 'leagueHeader__season--year' });
+        year2019.innerText = '2019'
+        leagueYear.appendChild(year2019)
+        const year2018 = createElement('li', { class: 'leagueHeader__season--year' });
+        year2018.innerText = '2018'
+        leagueYear.appendChild(year2018)
+
+        seasonsList.innerText = 'Season:'
+        seasonsContainer.appendChild(seasonsList)
+        seasonsContainer.appendChild(leagueYear)
+        this.mainBox.appendChild(seasonsContainer);
     }
 
     _createOneLeagueContent(fetchedData) {
@@ -173,7 +190,10 @@ export class Sport {
         table.appendChild(tableHeader);
         table.appendChild(tableBody);
         tableContainer.appendChild(table)
-        tableContainer.appendChild(this._createArrowBack( () => this.start ))
+        tableContainer.appendChild(this._createArrowBack( () => {
+            this._clearMainBox()
+            this.start()
+        }))
         this.mainBox.appendChild(tableContainer);
     }
 
@@ -192,10 +212,9 @@ export class Sport {
 
     _createArrowBack(callback){
         const arrowBack = createElement('i', {
-            class: 'bi bi-arrow-90deg-left bootstarp__icon--arrow',
-            style: 'color: black',
+            class: 'fas fa-long-arrow-alt-left bootstarp__icon--arrow',
         });
-        arrowBack.addEventListener('click', callback)
+        // arrowBack.addEventListener('click', callback)
 
         return arrowBack
     }

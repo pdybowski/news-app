@@ -38,6 +38,7 @@
 .leagueHeader__season {
     font-weight: 900;
     padding: 5px 20px;
+    display: inline;
 }
 
 .leagues__box--button {
@@ -67,9 +68,11 @@
 }
 
 .bootstarp__icon--arrow{
+    font-size: 3rem;
+    cursor: pointer;
     position: absolute;
     right: 0;
-    top: 0;
+    top: -50px;
     background-color: brown;
     z-index: 1000;
     width: 50px;
