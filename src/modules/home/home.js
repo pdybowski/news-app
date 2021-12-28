@@ -1,3 +1,6 @@
+import './home.css';
+import { createElement, createRow } from '../../utils';
+
 export class Home {
     constructor() {
         this.viewElement = document.querySelector('#main');
@@ -18,6 +21,8 @@ export class Home {
 
         this.mainContainer.appendChild(this.header);
         this.viewElement.appendChild(this.mainContainer);
+
+        this._createPeopleContainer();
     }
 
     _createTimeText() {
@@ -39,5 +44,53 @@ export class Home {
             this.sec = String(this.fullDate.getSeconds()).padStart(2, '0');
             this.content.innerText = `Today is ${this.day}.${this.month}.${this.year} \n Hour: ${this.hour}:${this.minutes}:${this.sec}`;
         }, 1000);
+    }
+
+    _createPeopleContainer() {
+        const loremIpsum =
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.';
+        const peopleContainer = createElement('div', { class: 'min-vh-100' });
+        this.firstRow = createRow();
+        this.firstRow.append(
+            this._createHomeCard('Robert Garrison', 'Android Developer', loremIpsum),
+            this._createHomeCard('Robert Garrison', 'Android Developer', loremIpsum),
+            this._createHomeCard('Robert Garrison', 'Android Developer', loremIpsum)
+        );
+        this.secondRow = createRow();
+        this.secondRow.append(
+            this._createHomeCard('Robert Garrison', 'Android Developer', loremIpsum, 6),
+            this._createHomeCard('Robert Garrison', 'Android Developer', loremIpsum, 6)
+        );
+        peopleContainer.append(this.firstRow, this.secondRow);
+        this.viewElement.append(peopleContainer);
+    }
+
+    _createHomeCard(name, role, quote, col = 4) {
+        const column = createElement('div', {
+            class: `col-lg-${col} d-flex justify-content-center`,
+        });
+        const homeCard = createElement('div', { class: 'home__card' });
+
+        const homeCardFaceFront = createElement('div', { class: 'home__card-face front-face' });
+        const userIcon = createElement('i', { class: 'fas fa-user-circle fa-7x' });
+        const userName = createElement(
+            'div',
+            { class: 'pt-3 text-uppercase name' },
+            null,
+            `${name}`
+        );
+        const userRole = createElement('div', { class: 'home__card-face__role' }, null, `${role}`);
+        homeCardFaceFront.append(userIcon, userName, userRole);
+
+        const homeCardFaceBack = createElement('div', { class: 'home__card-face back-face' });
+        const quoteIconLeft = createElement('i', { class: 'fas fa-quote-left' });
+        const quoteElement = createElement('div', null, null, `${quote}`);
+        const quoteIconRight = createElement('i', { class: 'fas fa-quote-right' });
+        homeCardFaceBack.append(quoteIconLeft, quoteElement, quoteIconRight);
+
+        homeCard.append(homeCardFaceFront, homeCardFaceBack);
+
+        column.append(homeCard);
+        return column;
     }
 }
