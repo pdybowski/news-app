@@ -38,6 +38,7 @@ export class Sport {
             class: 'football__header',
         });
         this._createTitle(text);
+
         this.mainBox.appendChild(this._header);
     }
     _createTitle(sectionTitle) {
@@ -59,7 +60,10 @@ export class Sport {
             },
         );
         button.innerText = 'Check the table!';
-        button.addEventListener('click', () => this._fetchDataForLeague(elementID))
+        button.addEventListener('click', () => {
+            this.mainBox.innerHTML = '';
+            this._fetchDataForLeague(elementID)
+        })
         leagueName.innerText = fulllLagueName;
         leagueBox.appendChild(logo);
         leagueBox.appendChild(leagueName);
@@ -85,7 +89,7 @@ export class Sport {
     }
 
     _clearMainBox() {
-        this.mainBox.innerHTML = '';
+        return this.mainBox.innerHTML = '';
     }
 
     _createLeagueHeader(data, elementID) {
@@ -94,17 +98,17 @@ export class Sport {
         const seasonsList = createElement('span', { class: 'season__list' });
         const seasonsContainer = createElement('div', { class: 'season__container' });
         const leagueYear = createElement('ul', { class: 'leagueHeader__season' });
-        const currentLeagueYear = createElement('li', { class: 'leagueHeader__season--year', elementID: '2021'});
-        currentLeagueYear.innerText = data.season
+        const currentLeagueYear = createElement('li', { class: 'leagueHeader__season--year', elementID: '2021' });
+        currentLeagueYear.innerText = '2021'
         leagueYear.appendChild(currentLeagueYear)
 
-        const year2020 = createElement('li', { class: 'leagueHeader__season--year', elementID: '2020'});
+        const year2020 = createElement('li', { class: 'leagueHeader__season--year', elementID: '2020' });
         year2020.innerText = '2020'
         leagueYear.appendChild(year2020)
-        const year2019 = createElement('li', { class: 'leagueHeader__season--year', elementID: '2019'});
+        const year2019 = createElement('li', { class: 'leagueHeader__season--year', elementID: '2019' });
         year2019.innerText = '2019'
         leagueYear.appendChild(year2019)
-        const year2018 = createElement('li', { class: 'leagueHeader__season--year', elementID: '2018'});
+        const year2018 = createElement('li', { class: 'leagueHeader__season--year', elementID: '2018' });
         year2018.innerText = '2018'
         leagueYear.appendChild(year2018)
 
@@ -123,9 +127,12 @@ export class Sport {
     }
 
     _createOneLeagueContent(fetchedData, elementID) {
-        console.log('fetchedData', fetchedData)
-        this._createLeagueHeader(fetchedData, elementID)
-        this._createTableWithDetails(fetchedData)
+        this._createLeagueHeader(fetchedData, elementID);
+        this._createArrowBack(() => addEventListener('click', () => {
+            this.mainBox.innerHTML = '';
+            this.start();
+        }))
+        this._createTableWithDetails(fetchedData);
     }
 
     _createTableHead() {
@@ -201,10 +208,7 @@ export class Sport {
         table.appendChild(tableHeader);
         table.appendChild(tableBody);
         tableContainer.appendChild(table)
-        tableContainer.appendChild(this._createArrowBack(() => {
-            this._clearMainBox()
-            this.start()
-        }))
+
         this.mainBox.appendChild(tableContainer);
     }
 
@@ -225,8 +229,9 @@ export class Sport {
         const arrowBack = createElement('i', {
             class: 'fas fa-long-arrow-alt-left bootstarp__icon--arrow',
         });
-        // arrowBack.addEventListener('click', callback)
 
-        return arrowBack
+        callback()
+
+        this.mainBox.appendChild(arrowBack);
     }
 }

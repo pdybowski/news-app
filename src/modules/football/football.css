@@ -1,5 +1,9 @@
+#main{
+    overflow: scroll;
+}
+
 .football__header {
-    padding: 20px 0;
+    padding: 10px 0;
 }
 
 .leagues__container {
@@ -89,10 +93,7 @@
 .bootstarp__icon--arrow{
     font-size: 3rem;
     cursor: pointer;
-    position: absolute;
-    right: 0;
-    top: -50px;
-    background-color: brown;
+
     z-index: 1000;
     width: 50px;
     height: 50px;
