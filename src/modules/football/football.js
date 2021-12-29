@@ -225,13 +225,17 @@ export class Sport {
         this.mainBox.append(leaguesContainer);
     }
 
-    _createArrowBack(callback) {
+    _createArrowBack() {
+        const arrowBackAnchor = createElement('a', {
+            class: '',
+            href: './#/football'
+        });
         const arrowBack = createElement('i', {
             class: 'fas fa-long-arrow-alt-left bootstarp__icon--arrow',
         });
 
-        callback()
-
-        this.mainBox.appendChild(arrowBack);
+        
+        arrowBackAnchor.appendChild(arrowBack)
+        this.mainBox.appendChild(arrowBackAnchor);
     }
 }
