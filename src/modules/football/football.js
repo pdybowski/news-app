@@ -75,7 +75,7 @@ export class Sport {
             const fetchedLeagueData = await this._api.getSecificLeague(elementID, season);
             const leagueData = fetchedLeagueData.data
 
-            this._createOneLeagueContent(leagueData)
+            this._createOneLeagueContent(leagueData, elementID)
         } catch (error) {
             new Notification().showError('Fetch football league data error', error);
             console.log(error)
@@ -88,7 +88,7 @@ export class Sport {
         this.mainBox.innerHTML = '';
     }
 
-    _createLeagueHeader(data) {
+    _createLeagueHeader(data, elementID) {
         console.log(data)
         this._createHeader(data.name);
         const seasonsList = createElement('span', { class: 'season__list' });
@@ -117,14 +117,14 @@ export class Sport {
         document.querySelectorAll('.leagueHeader__season--year').forEach(year => {
             year.addEventListener('click', () => {
                 let clickedYear = year.getAttribute('elementID');
-                this._fetchDataForLeague('eng.1', clickedYear)
+                this._fetchDataForLeague(elementID, clickedYear)
             });
         });
     }
 
-    _createOneLeagueContent(fetchedData) {
+    _createOneLeagueContent(fetchedData, elementID) {
         console.log('fetchedData', fetchedData)
-        this._createLeagueHeader(fetchedData)
+        this._createLeagueHeader(fetchedData, elementID)
         this._createTableWithDetails(fetchedData)
     }
 
