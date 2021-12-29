@@ -7,6 +7,8 @@ import './football.css'
 export class Sport {
     constructor() {
         this.mainBox = document.querySelector('#main');
+        this.year = document.querySelectorAll('.leagueHeader__season--year');
+
         this._api = new FootballApi();
     }
 
@@ -65,12 +67,12 @@ export class Sport {
         return leagueBox
     }
 
-    async _fetchDataForLeague(elementID) {
+    async _fetchDataForLeague(elementID, season = 2021) {
         const spinner = new Spinner();
         try {
             spinner.showSpinner();
             this._clearMainBox()
-            const fetchedLeagueData = await this._api.getSecificLeague(elementID);
+            const fetchedLeagueData = await this._api.getSecificLeague(elementID, season);
             const leagueData = fetchedLeagueData.data
 
             this._createOneLeagueContent(leagueData)
@@ -87,28 +89,37 @@ export class Sport {
     }
 
     _createLeagueHeader(data) {
+        console.log(data)
         this._createHeader(data.name);
         const seasonsList = createElement('span', { class: 'season__list' });
         const seasonsContainer = createElement('div', { class: 'season__container' });
         const leagueYear = createElement('ul', { class: 'leagueHeader__season' });
-        const currentLeagueYear = createElement('li', { class: 'leagueHeader__season--year' });
+        const currentLeagueYear = createElement('li', { class: 'leagueHeader__season--year', elementID: '2021'});
         currentLeagueYear.innerText = data.season
         leagueYear.appendChild(currentLeagueYear)
 
-        const year2020 = createElement('li', { class: 'leagueHeader__season--year' });
+        const year2020 = createElement('li', { class: 'leagueHeader__season--year', elementID: '2020'});
         year2020.innerText = '2020'
         leagueYear.appendChild(year2020)
-        const year2019 = createElement('li', { class: 'leagueHeader__season--year' });
+        const year2019 = createElement('li', { class: 'leagueHeader__season--year', elementID: '2019'});
         year2019.innerText = '2019'
         leagueYear.appendChild(year2019)
-        const year2018 = createElement('li', { class: 'leagueHeader__season--year' });
+        const year2018 = createElement('li', { class: 'leagueHeader__season--year', elementID: '2018'});
         year2018.innerText = '2018'
         leagueYear.appendChild(year2018)
+
 
         seasonsList.innerText = 'Season:'
         seasonsContainer.appendChild(seasonsList)
         seasonsContainer.appendChild(leagueYear)
         this.mainBox.appendChild(seasonsContainer);
+
+        document.querySelectorAll('.leagueHeader__season--year').forEach(year => {
+            year.addEventListener('click', () => {
+                let clickedYear = year.getAttribute('elementID');
+                this._fetchDataForLeague('eng.1', clickedYear)
+            });
+        });
     }
 
     _createOneLeagueContent(fetchedData) {
@@ -190,7 +201,7 @@ export class Sport {
         table.appendChild(tableHeader);
         table.appendChild(tableBody);
         tableContainer.appendChild(table)
-        tableContainer.appendChild(this._createArrowBack( () => {
+        tableContainer.appendChild(this._createArrowBack(() => {
             this._clearMainBox()
             this.start()
         }))
@@ -210,7 +221,7 @@ export class Sport {
         this.mainBox.append(leaguesContainer);
     }
 
-    _createArrowBack(callback){
+    _createArrowBack(callback) {
         const arrowBack = createElement('i', {
             class: 'fas fa-long-arrow-alt-left bootstarp__icon--arrow',
         });

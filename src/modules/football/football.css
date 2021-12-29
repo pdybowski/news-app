@@ -1,5 +1,5 @@
 .football__header {
-    padding: 20px;
+    padding: 20px 0;
 }
 
 .leagues__container {
@@ -35,10 +35,29 @@
     padding-top: 15px;
 }
 
+.season__container{
+    margin: 15px 0;
+    color: rgb(17, 14, 14);
+}
+
 .leagueHeader__season {
+    display: flex;
+    flex-direction: row;
+
+    list-style: none;
     font-weight: 900;
     padding: 5px 20px;
     display: inline;
+}
+
+.leagueHeader__season--year {
+    display: inline-block;
+    padding-right: 10px;
+    cursor: pointer;
+}
+
+.leagueHeader__season--year:hover {
+    border-bottom: 2px solid #C7DBD2;
 }
 
 .leagues__box--button {
