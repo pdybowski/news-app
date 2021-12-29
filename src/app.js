@@ -1,4 +1,4 @@
-import { Health, Home, News, Sport, Weather } from './modules';
+import { Home, News, Sport, Weather } from './modules';
 import Router from './modules/shared/router';
 import { Spinner } from './shared';
 
@@ -13,7 +13,23 @@ export default class App {
         this.router.addRoute('/weather', new Weather());
         this.router.addRoute('/football', new Sport());
         this.router.addRoute('/news', new News());
-        this.router.addRoute('/health', new Health());
         this.router.start();
+        this._displayMobileMenu();
+    }
+
+    _handleClick() {
+        const hamburger = document.querySelector('.hamburger');
+        hamburger.classList.toggle('hamburger--active');
+
+        const ul = document.querySelector('#myTopnav');
+        ul.classList.toggle('responsive');
+    }
+
+    _displayMobileMenu() {
+        const hamburger = document.querySelector('.hamburger');
+        hamburger.addEventListener('click', this._handleClick);
+
+        const links = document.querySelectorAll('.mobile--hidden');
+        links.forEach((link) => link.addEventListener('click', this._handleClick));
     }
 }

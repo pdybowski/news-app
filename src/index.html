@@ -25,33 +25,48 @@
     <body>
         <div class="wrapper">
             <header>
-                <ul class="nav--list">
+                <ul class="nav--list topnav" id="myTopnav">
                     <li class="nav-list nav--item">
                         <a class="nav-list nav--item__link" data-link href="./#">Home</a>
                     </li>
-                    <li class="nav-list nav--item">
+                    <!--<li class="nav-list nav--item">
                         <a class="nav-list nav--item__link" data-link href="./#/jobs">Job Offer</a>
+                    </li>-->
+                    <li class="nav-list nav--item">
+                        <a
+                            class="nav-list nav--item__link mobile--hidden"
+                            data-link
+                            href="./#/weather"
+                            >Weather</a
+                        >
                     </li>
                     <li class="nav-list nav--item">
-                        <a class="nav-list nav--item__link" data-link href="./#/weather">Weather</a>
-                    </li>
-                    <li class="nav-list nav--item">
-                        <a class="nav-list nav--item__link" data-link href="./#/football"
+                        <a
+                            class="nav-list nav--item__link mobile--hidden"
+                            data-link
+                            href="./#/football"
                             >Football</a
                         >
                     </li>
                     <li class="nav-list nav--item">
-                        <a class="nav-list nav--item__link" data-link href="./#/news">News</a>
+                        <a class="nav-list nav--item__link mobile--hidden" data-link href="./#/news"
+                            >News</a
+                        >
                     </li>
-                    <li class="nav-list nav--item">
+                    <!--<li class="nav-list nav--item">
                         <a class="nav-list nav--item__link" data-link href="./#/health">Health</a>
-                    </li>
+                    </li>>-->
                     <li class="nav-list nav--item">
                         <a class="nav-list nav--item__link" data-link href="./#/other"
                             >Finance/env/gov</a
                         >
                     </li>
                 </ul>
+                <button class="hamburger">
+                    <span class="hamburger__box">
+                        <span class="hamburger__inner"></span>
+                    </span>
+                </button>
             </header>
             <main class="container-lg" id="main">
                 <!-- This is where the content will be created and added by JavaScript (depending on url)-->
