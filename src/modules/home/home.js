@@ -22,7 +22,7 @@ export class Home {
         this.mainContainer.appendChild(this.header);
         this.viewElement.appendChild(this.mainContainer);
 
-        this._createPeopleContainer();
+        this._createInfoAndPeopleContainer();
     }
 
     _createTimeText() {
@@ -46,23 +46,33 @@ export class Home {
         }, 1000);
     }
 
-    _createPeopleContainer() {
+    _createInfoAndPeopleContainer() {
         const loremIpsum =
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.';
-        const peopleContainer = createElement('div', { class: 'min-vh-100' });
+        const infoAndPeopleContainer = createElement('div', { class: 'min-vh-100' });
+
+        infoAndPeopleContainer.append(
+            this._createQuickInfoContainer(loremIpsum),
+            this._createPeopleSection(loremIpsum)
+        );
+        this.viewElement.append(infoAndPeopleContainer);
+    }
+
+    _createPeopleSection(loremIpsum) {
+        const peopleSection = createElement('div', { class: 'py-5' });
         this.firstRow = createRow();
         this.firstRow.append(
-            this._createHomeCard('Robert Garrison', 'Android Developer', loremIpsum),
-            this._createHomeCard('Robert Garrison', 'Android Developer', loremIpsum),
-            this._createHomeCard('Robert Garrison', 'Android Developer', loremIpsum)
+            this._createHomeCard('Piotr Dybowski', 'Mentor', loremIpsum),
+            this._createHomeCard('Justyna Gładysz', 'Team Member', loremIpsum),
+            this._createHomeCard('Filip Kaczmarek', 'Team Member', loremIpsum)
         );
         this.secondRow = createRow();
         this.secondRow.append(
-            this._createHomeCard('Robert Garrison', 'Android Developer', loremIpsum, 6),
-            this._createHomeCard('Robert Garrison', 'Android Developer', loremIpsum, 6)
+            this._createHomeCard('Tomasz Prządka', 'Team Member', loremIpsum, 6),
+            this._createHomeCard('Patrycja Starzec', 'Team Member', loremIpsum, 6)
         );
-        peopleContainer.append(this.firstRow, this.secondRow);
-        this.viewElement.append(peopleContainer);
+        peopleSection.append(this.firstRow, this.secondRow);
+        return peopleSection;
     }
 
     _createHomeCard(name, role, quote, col = 4) {
@@ -92,5 +102,20 @@ export class Home {
 
         column.append(homeCard);
         return column;
+    }
+
+    _createQuickInfoContainer(loremIpsum) {
+        const quickInfoContainer = createElement('div', {
+            class: 'home__infoElement p-5 m-5',
+        });
+        const quickInfoHeader = createElement(
+            'h2',
+            { class: 'text-center border-bottom pb-3' },
+            null,
+            'About'
+        );
+        const quickInoContent = createElement('div', { class: 'pt-4' }, null, `${loremIpsum}`);
+        quickInfoContainer.append(quickInfoHeader, quickInoContent);
+        return quickInfoContainer;
     }
 }

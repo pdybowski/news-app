@@ -20,7 +20,7 @@
     transform-style: preserve-3d;
     transition: 0.5s;
     backface-visibility: hidden;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
 }
 
 .home__card .home__card-face.front-face,
@@ -70,4 +70,11 @@
 
 .home__card:hover .home__card-face.back-face {
     transform: rotateY(360deg)
+}
+
+.home__infoElement {
+    color: snow;
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+    border-radius: 0.25rem;
 }
