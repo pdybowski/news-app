@@ -8,9 +8,7 @@ export class GovApi extends API {
     }
 
     fetch(query) {
-        return super.fetch(`${GOVERNMENT_API.API_BASE_URL}search?`, {
-            method: GET,
-        });
+        return super.fetch(`${GOVERNMENT_API.API_BASE_URL}search?`);
     }
 
     getItemByQuery(query) {

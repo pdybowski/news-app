@@ -1,0 +1,72 @@
+#govMainContainer {
+    display: flex;
+    height: 100%;
+    min-height: 400px;
+}
+
+#paginationBar {
+    max-width: 400px;
+    min-width: 300px;
+    width: 100%;
+    display: block;
+    margin: 0 auto;
+    position: relative;
+    background-color: lightgreen;
+    padding: 20px;
+}
+
+#resultsContainer {
+    min-height: 400px;
+    background-color: azure;
+}
+#resultsBlock {
+    min-height: 400px;
+    background-color: brown;
+}
+.pagination__block {
+    text-align: center;
+    width: 100%;
+}
+
+.pagination__block .page__button--outline-nonepageButton {
+    background-color: grey;
+    color: white;
+}
+.pagination_block button:hover {
+    cursor: pointer;
+}
+
+.gov-search-container {
+    display: flex;
+    order: 2;
+    min-height: 60px;
+    background-color: white;
+    border: 1px gray solid;
+    justify-content: center;
+    margin: 8px;
+}
+
+/* #actionsBar {
+    display: flex;
+    width: 100%;
+    background-color: brown;
+    padding: 8px;
+} */
+
+.gov__button--back {
+    order: 1;
+    border: 1px gray solid;
+    margin: 8px;
+    padding: 8px;
+    min-height: 64px;
+    min-width: 64px;
+}
+/* 
+.gov__search-input--text {
+} */
+
+.fa,
+.fas {
+    /* font-size: 32px; */
+    color: black;
+}
