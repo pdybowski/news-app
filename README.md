@@ -19,7 +19,7 @@ Single page application written in Javascript available on [https://pdybowski.gi
 ### Libraries/tools
 
 -   [Babel](https://babeljs.io/) and its modules/plugins - converts ECMAScript 2015+ code into a backwards compatible version of JavaScript
--   [Webpack](https://webpack.js.org/) and its modules - bundles various dependencies, whether it be npm package or files we created and outputs it as bundled files browser can make use of
+-   [Webpack](https://webpack.js.org/) and its modules - bundles various dependencies, whether it be npm package or files created and outputs it as bundled files browser can make use of
 -   [prettier](https://prettier.io/) - code formatter for speeding up development
 -   [Bootstrap 5.0.2](https://getbootstrap.com/) - for mobile-first styling
 -   [FontAwesome](https://fontawesome.com/) - for variety of icons used across the app
@@ -35,7 +35,5 @@ Single page application written in Javascript available on [https://pdybowski.gi
 -   **Mentor:** [Piotr Dybowski](https://github.com/pdybowski)
 -   [Justyna Gładysz](https://github.com/jusgladysz)
 -   [Patrycja Starzec](https://github.com/patrycjastarzec)
--   [Paulina Szybińska](https://github.com/paulinaszybinska)
 -   [Tomasz Prządka](https://github.com/altNameForStudying)
--   [Kamila Zając](https://github.com/kamilazajac)
 -   [Filip Kaczmarek](https://github.com/FilipKaczmarek)
