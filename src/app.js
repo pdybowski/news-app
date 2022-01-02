@@ -1,4 +1,4 @@
-import { Health, Home, News, Sport, Weather } from './modules';
+import { Government, Health, Home, News, Sport, Weather } from './modules';
 import Router from './modules/shared/router';
 import { Spinner } from './shared';
 
@@ -14,6 +14,7 @@ export default class App {
         this.router.addRoute('/football', new Sport());
         this.router.addRoute('/news', new News());
         this.router.addRoute('/health', new Health());
+        this.router.addRoute('/gov', new Government());
         this.router.start();
     }
 }
