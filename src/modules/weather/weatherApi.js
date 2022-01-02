@@ -25,4 +25,14 @@ export class WeatherApi extends API {
     getCityList(query) {
         return this.fetch(`locations/v1/cities/autocomplete?q=${query}&`);
     }
+
+    getKeyByGeolocation(lat, lon) {
+        return this.fetch(
+            `locations/v1/cities/geoposition/search?q=${lat}%2C${lon}&toplevel=true&`
+        );
+    }
+
+    getHourlyWeather(locationKey) {
+        return this.fetch(`forecasts/v1/hourly/12hour/${locationKey}?metric=true&`);
+    }
 }

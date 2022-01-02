@@ -7,32 +7,78 @@ import './weather.css';
 export class Weather {
     constructor() {
         this._viewElement = document.querySelector('#main');
-        if (
-            !isDefined(localStorage.getItem(WEATHER_COUNTRY_KEY_LS)) ||
-            !isDefined(localStorage.getItem(WEATHER_COUNTRY_LABEL_LS))
-        ) {
-            this._setDefaultLocalStorageValues();
-        }
         this._api = new WeatherApi();
     }
 
-    _setDefaultLocalStorageValues() {
-        localStorage.setItem(WEATHER_COUNTRY_KEY_LS, '274663');
-        localStorage.setItem(WEATHER_COUNTRY_LABEL_LS, 'Warsaw, Masovia, Poland');
+    async start() {
+        this._createMainContainer();
+        if (this._isLocalStorageSet()) {
+            await this._refreshOrCreateWeatherContent();
+        } else {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    await this._getGeolocationDataAndCreateContent(),
+                    async () => await this._refreshOrCreateWeatherContent(true)
+                );
+            } else {
+                await this._refreshOrCreateWeatherContent(true);
+            }
+        }
     }
 
-    async start() {
+    async _refreshOrCreateWeatherContent(withDefaultLocation = false) {
         const spinner = new Spinner();
         try {
             spinner.showSpinner();
-            await this._fetchData();
-            this._createMainContainer();
-            this._createWeatherContainer();
+            if (withDefaultLocation) {
+                this._setLocalStorageValues();
+            }
+            await this._fetchDataAndCreateContent();
         } catch (error) {
             new Notification().showError('Fetch weather data error', error);
         } finally {
             spinner.removeSpinner();
         }
+    }
+
+    async _getGeolocationDataAndCreateContent() {
+        return async (position) => {
+            const spinner = new Spinner();
+            spinner.showSpinner();
+            try {
+                const response = await this._api.getKeyByGeolocation(
+                    position.coords.latitude,
+                    position.coords.longitude
+                );
+                this._setLocalStorageValues(
+                    response.Key,
+                    `${response.LocalizedName}, ${response.AdministrativeArea.LocalizedName}, ${response.Country.LocalizedName}`
+                );
+            } catch (error) {
+                new Notification().showError('Fetch geolocation data error', error);
+                this._setLocalStorageValues();
+            } finally {
+                await this._fetchDataAndCreateContent();
+                spinner.removeSpinner();
+            }
+        };
+    }
+
+    _isLocalStorageSet() {
+        return (
+            isDefined(localStorage.getItem(WEATHER_COUNTRY_KEY_LS)) &&
+            isDefined(localStorage.getItem(WEATHER_COUNTRY_LABEL_LS))
+        );
+    }
+
+    async _fetchDataAndCreateContent() {
+        await this._fetchData();
+        this._createWeatherContainer();
+    }
+
+    _setLocalStorageValues(key = '274663', label = 'Warsaw, Masovia, Poland') {
+        localStorage.setItem(WEATHER_COUNTRY_KEY_LS, key);
+        localStorage.setItem(WEATHER_COUNTRY_LABEL_LS, label);
     }
 
     async _fetchData() {
@@ -45,16 +91,23 @@ export class Weather {
         this._currentLocationInfo = await this._api.getCurrentLocationInfo(
             localStorage.getItem(WEATHER_COUNTRY_KEY_LS)
         );
+        this._hourlyWeather = await this._api.getHourlyWeather(
+            localStorage.getItem(WEATHER_COUNTRY_KEY_LS)
+        );
     }
 
     _createMainContainer() {
-        this._container = createElement('div');
+        this._container = createElement('div', { class: 'weather__main-container' });
         this._viewElement.append(this._container);
     }
 
     _createToday() {
         const currentDayDiv = createElement('div');
-        currentDayDiv.append(this._createCurrentDayInfo(), this._createCurrentDayWeather());
+        currentDayDiv.append(
+            this._createCurrentDayInfo(),
+            this._createCurrentDayWeather(),
+            this._createHourlyCurrentDayWeather()
+        );
         this._weatherContainer.append(currentDayDiv);
     }
 
@@ -84,7 +137,7 @@ export class Weather {
 
     _createCurrentDayWeather() {
         const currentDayWeatherDiv = createElement('div', {
-            class: 'd-flex align-items-center justify-content-start weather__element',
+            class: 'd-flex align-items-center weather__element weather__element--center',
         });
 
         const dailyForecast = this._fiveDayWeather.DailyForecasts[0];
@@ -100,6 +153,40 @@ export class Weather {
         );
 
         return currentDayWeatherDiv;
+    }
+
+    _createHourlyCurrentDayWeather() {
+        const hourlyCurrentDayWeatherDiv = createElement('div', {
+            class: 'd-flex flex-column align-items-start justify-content-center weather__element py-4',
+        });
+        hourlyCurrentDayWeatherDiv.append(
+            createElement('h2', { class: 'ps-3' }, null, 'Hourly Weather')
+        );
+
+        const hourlyDiv = createElement('div', {
+            class: 'd-flex justify-content-between col-12 px-3 ',
+        });
+
+        for (let i = 1; i <= 7; i += 2) {
+            const parentElement = createElement('div', { class: 'd-flex flex-column' });
+
+            const tempElement = createElement('div', { class: 'fs-5 fw-bold text-center' });
+            tempElement.append(`${this._hourlyWeather[i].Temperature.Value}°C`);
+            parentElement.append(tempElement);
+
+            const hourElement = createElement('div', { class: 'text-center' });
+            hourElement.append(
+                `${String(new Date(this._hourlyWeather[i].DateTime).getHours()).padStart(
+                    2,
+                    '0'
+                )}:00`
+            );
+            parentElement.append(hourElement);
+            hourlyDiv.append(parentElement);
+        }
+
+        hourlyCurrentDayWeatherDiv.append(hourlyDiv);
+        return hourlyCurrentDayWeatherDiv;
     }
 
     _createNextDays() {
@@ -148,7 +235,7 @@ export class Weather {
 
     _createTemperatureRange(maxTemperature, minTemperature, isHorizontal = false) {
         const temperatureRangeDiv = isHorizontal
-            ? createElement('div', { class: 'col-12 col-sm-4' })
+            ? createElement('div', { class: 'col-12 col-sm-4 weather__element--center' })
             : createRow();
 
         const maxTempDiv = this._createTemperature(maxTemperature);
@@ -167,7 +254,9 @@ export class Weather {
 
     _createFirstElement(value, isHorizontal = false) {
         const firstElementDiv = isHorizontal
-            ? createElement('div', { class: 'fs-1 fw-bold col-12 col-sm-4' })
+            ? createElement('div', {
+                  class: 'fs-1 fw-bold col-12 col-sm-4 weather__element--center',
+              })
             : createElement('div');
 
         switch (value) {
@@ -202,10 +291,13 @@ export class Weather {
 
     _createWeatherIcon(iconId, isHorizontal = false) {
         const weatherIconDiv = isHorizontal
-            ? createElement('div', { class: 'col-12 col-sm-4' })
+            ? createElement('div', { class: 'col-12 col-sm-4 weather__element--center' })
             : createElement('div');
         const img = createElement('img', {
-            src: `./content/img/weather/${iconId}-s.png`,
+            src: `https://developer.accuweather.com/sites/default/files/${String(iconId).padStart(
+                2,
+                '0'
+            )}-s.png`,
         });
         weatherIconDiv.appendChild(img);
         return weatherIconDiv;
@@ -214,7 +306,12 @@ export class Weather {
     _createSettingsContainer() {
         const modalId = 'weatherModal';
         if (!isDefined(document.getElementById(modalId))) {
-            new Modal(modalId, 'Weather settings', this._createSettingsBody()).create();
+            new Modal(
+                modalId,
+                'Weather settings',
+                this._createSettingsBody(),
+                this._createSearchCountrySaveAndCloseButton()
+            ).create();
         }
         const settingsButtonContainer = createElement('div', { class: 'd-flex weather__element' });
         const settingsButton = Modal.createModalHandlerButton(modalId, {
@@ -241,13 +338,12 @@ export class Weather {
         });
 
         this._createSearchCountryInput();
-        this._createSearchCountrySaveButton();
 
         this._settingsBody.append(this._setingsFormElement);
     }
 
     _createSearchCountryInput() {
-        const countrySearchContainer = createElement('div', { class: 'form-floating col ps-0' });
+        const countrySearchContainer = createElement('div', { class: 'form-floating col px-0' });
         this._countrySearchElement = createElement(
             'input',
             {
@@ -303,44 +399,29 @@ export class Weather {
         }
     }
 
-    _createSearchCountrySaveButton() {
-        this._setingsFormElement.append(
-            createElement(
-                'button',
-                {
-                    type: 'button',
-                    class: 'btn btn-primary col-2',
-                },
-                {
-                    click: this._updateWeatherConfiguration(),
-                },
-                'Save'
-            )
+    _createSearchCountrySaveAndCloseButton() {
+        return createElement(
+            'button',
+            {
+                type: 'button',
+                class: 'btn btn-primary col-3',
+                'data-bs-dismiss': 'modal',
+            },
+            {
+                click: this._updateWeatherConfiguration(),
+            },
+            'Save & Close'
         );
     }
 
     _updateWeatherConfiguration() {
         return async () => {
-            localStorage.setItem(WEATHER_COUNTRY_LABEL_LS, this._countrySearchElement.value);
-            localStorage.setItem(
-                WEATHER_COUNTRY_KEY_LS,
-                this._datalistOptions.get(this._countrySearchElement.value).toString()
+            this._setLocalStorageValues(
+                this._datalistOptions.get(this._countrySearchElement.value).toString(),
+                this._countrySearchElement.value
             );
-            await this._refreshWeatherContainer();
+            await this._refreshOrCreateWeatherContent();
         };
-    }
-
-    async _refreshWeatherContainer() {
-        const spinner = new Spinner();
-        try {
-            spinner.showSpinner();
-            await this._fetchData();
-            this._createWeatherContainer();
-        } catch (error) {
-            new Notification().showError('Fetch weather data error', error);
-        } finally {
-            spinner.removeSpinner();
-        }
     }
 
     _createWeatherContainer() {

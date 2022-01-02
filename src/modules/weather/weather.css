@@ -1,6 +1,6 @@
 .weather__element {
     color: snow;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.5);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
     border-radius: 0.25rem;
     margin: 10px;
@@ -12,4 +12,29 @@
 
 .weather__settings__button:hover {
     color: #686666;
+}
+
+.weather__main-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@media screen and (max-width: 650px) {
+    .weather__main-container {
+        position: static;
+        transform: none;
+    }
+
+    .weather__element--center {
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+@media screen and (min-width: 650px) {
+    .weather__element--center {
+        justify-content: flex-start;
+    }
 }
