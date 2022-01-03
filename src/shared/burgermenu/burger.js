@@ -12,7 +12,10 @@ export class BurgerMenu {
     }
 
     _createBurgerMenu() {
-        const hamburger = createElement('button', { class: 'hamburger' });
+        const hamburger = createElement('button', {
+            class: 'hamburger',
+            title: 'burger menu button',
+        });
 
         const hamburger_box = createElement('span', { class: 'hamburger__box' });
         const hamburger_inner = createElement('span', { class: 'hamburger__inner' });
@@ -20,6 +23,16 @@ export class BurgerMenu {
 
         hamburger.appendChild(hamburger_box);
         this.wrapper.appendChild(hamburger);
+
+        const link = document.querySelector('.nav--item__link');
+        const logo = createElement('img', {
+            class: 'home__icon',
+            //src: './content/img/favicon.ico',
+            src: 'https://img.icons8.com/external-kiranshastry-gradient-kiranshastry/64/000000/external-news-news-kiranshastry-gradient-kiranshastry.png',
+            alt: 'news logo',
+        });
+        link.innerText = '';
+        link.appendChild(logo);
     }
 
     _handleClick() {
