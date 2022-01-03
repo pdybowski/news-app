@@ -157,7 +157,7 @@ export class Weather {
 
     _createHourlyCurrentDayWeather() {
         const hourlyCurrentDayWeatherDiv = createElement('div', {
-            class: 'd-flex flex-column align-items-start justify-content-center weather__element',
+            class: 'd-flex flex-column align-items-start justify-content-center weather__element py-4',
         });
         hourlyCurrentDayWeatherDiv.append(
             createElement('h2', { class: 'ps-3' }, null, 'Hourly Weather')
@@ -294,7 +294,10 @@ export class Weather {
             ? createElement('div', { class: 'col-12 col-sm-4 weather__element--center' })
             : createElement('div');
         const img = createElement('img', {
-            src: `./content/img/weather/${iconId}-s.png`,
+            src: `https://developer.accuweather.com/sites/default/files/${String(iconId).padStart(
+                2,
+                '0'
+            )}-s.png`,
         });
         weatherIconDiv.appendChild(img);
         return weatherIconDiv;

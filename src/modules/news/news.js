@@ -10,6 +10,7 @@ export class News {
     }
 
     start() {
+        this._createNewsWrapper();
         this._fetchData();
         this._createHeader();
         this._createTitle();
@@ -25,7 +26,7 @@ export class News {
             this._data = array.articles;
             this._createArticlesArray(this._data, 4);
         } catch (error) {
-            new Notification().showError('Fetch weather data error', error);
+            new Notification().showError('Fetch news data error', error);
         } finally {
             spinner.removeSpinner();
         }
@@ -39,7 +40,7 @@ export class News {
             this.user_data = user_array.articles;
             this._createArticlesArray(this.user_data, 4);
         } catch (error) {
-            new Notification().showError('Fetch weather data error', error);
+            new Notification().showError('Fetch news data error', error);
         } finally {
             spinner.removeSpinner();
         }
@@ -55,7 +56,7 @@ export class News {
             });
             this._searchData(newKeyword);
         }
-        this._footer ? this.viewElement.removeChild(this._footer) : null;
+        this._footer ? this._newsWrapper.removeChild(this._footer) : null;
         input.value = null;
     }
 
@@ -69,10 +70,28 @@ export class News {
         this._displayArticles(); // displays article after view is rendered
     }
 
-    _displayArticles(number = 0, array = this._arrayOfArticles) {
-        for (let i = 0; i < this._pageSize; i++) {
-            this._container.appendChild(this._createCard(array[number][i]));
+    async _displayArticles(number = 0, array = this._arrayOfArticles) {
+        try {
+            for (let i = 0; i < this._pageSize; i++) {
+                await this._container.appendChild(this._createCard(array[number][i]));
+            }
+        } catch (error) {
+            this._onSearchResultNull();
         }
+    }
+
+    _onSearchResultNull() {
+        let error_container = createElement('div', {
+            class: 'news__error--container',
+        });
+        let error_info = createElement(
+            'div',
+            { class: 'news__error--info' },
+            null,
+            'Sorry, nothing found, please try again'
+        );
+        error_container.appendChild(error_info);
+        this._container.appendChild(error_container);
     }
 
     _insertPageNumber(number) {
@@ -83,60 +102,39 @@ export class News {
         this._displayArticles(number);
     }
 
-    _createFooter(array) {
-        this._footer = createElement('div', { class: 'footer news_footer' }, null, null);
-        for (let i = 0; i < array.length; i++) {
-            this._pageNumber = createElement(
-                'button',
-                {
-                    id: `${i + 1}`,
-                    class: 'btn btn-light page__number',
-                    value: `${i + 1}`,
-                },
-                {
-                    click: this._insertPageNumber.bind(this, i, array),
-                },
-                `${i + 1}`
-            );
-            this._footer.appendChild(this._pageNumber);
-        }
-        this.viewElement.appendChild(this._footer);
+    _createNewsWrapper() {
+        this._newsWrapper = createElement('div', { class: 'news__wrapper' }, null, null);
+        this.viewElement.appendChild(this._newsWrapper);
     }
 
     _createHeader() {
         this._header = createElement('div', {
-            class: 'row  news__header',
+            class: 'news__header',
         });
-        this.viewElement.appendChild(this._header);
+        this._newsWrapper.appendChild(this._header);
     }
 
     _createTitle() {
         const title = createElement('h1', { class: 'news__title' }, null, 'The News');
-        const column = createElement('div', {
-            class: 'col-12 col-md-6 d-flex justify-content-md-start justify-content-center',
-        });
-        column.appendChild(title);
-        this._header.appendChild(column);
+        this._header.appendChild(title);
     }
 
     _createForm() {
-        const form = createElement('form', {
-            class: 'd-flex justify-content-md-end justify-content-center news__form',
-        });
-        form.append(
-            this._createLabel(),
-            this._createInput(),
-            this._createButton('btn btn-light', 'search', {
-                click: this._searchKeyword.bind(this),
-            })
+        const form = createElement(
+            'form',
+            {
+                class: 'news__form',
+            },
+            { submit: this._onSubmit.bind(this) }
         );
-        const column = createElement('div', { class: 'col' });
-        column.appendChild(form);
-        this._header.appendChild(column);
+        form.append(this._createSearchBox());
+        this._header.appendChild(form);
     }
 
-    _createLabel() {
-        return createElement('label', { for: 'search', class: 'form-label' });
+    _createSearchBox() {
+        const searchbox = createElement('div', { class: 'news__searchbox' });
+        searchbox.append(this._createInput(), this._createSearchFavicon());
+        return searchbox;
     }
 
     _createInput() {
@@ -144,46 +142,66 @@ export class News {
             type: 'text',
             id: 'news',
             name: 'news',
-            placeholder: 'keyword',
-            class: 'form-control news__input',
+            placeholder: 'Search...',
+            class: 'news__input',
         });
     }
 
+    _onSubmit(e) {
+        e.preventDefault();
+        this._searchKeyword();
+        return false; //prevents reloading the page after submitting
+    }
+
+    _createSearchFavicon() {
+        const searchIcon = createElement('i', { class: 'fas fa-search' });
+        const iconWrapper = createElement(
+            'div',
+            { class: 'icon__wrapper' },
+            {
+                click: this._searchKeyword.bind(this),
+            }
+        );
+        iconWrapper.appendChild(searchIcon);
+        return iconWrapper;
+    }
+
     _createContainer() {
-        this._container = createElement('div', { class: 'row news__container' });
-        this.viewElement.appendChild(this._container);
+        this._container = createElement('div', { class: ' news__container' });
+        this._newsWrapper.appendChild(this._container);
         return this._container;
     }
 
     _createCard(parameter) {
-        this._card = createElement('div', { class: 'col-xs news__card' }, null, null);
+        this._card = createElement('div', { class: 'news__card' });
         this._card.appendChild(this._createImg(parameter));
         this._card.appendChild(this._createCardDetails(parameter));
         return this._card;
     }
 
     _createImg(parameter) {
-        const img = createElement('img', {
-            alt: '',
-            class: 'news__img',
-        });
-        try {
-            if (parameter.urlToImage) {
-                img.setAttribute('src', `${parameter.urlToImage}`);
-            } else {
-                img.setAttribute(
-                    'src',
-                    'https://images.unsplash.com/photo-1476242906366-d8eb64c2f661?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1469&q=80'
-                );
+        const img = createElement(
+            'img',
+            {
+                alt: 'image illustrating news article',
+                class: 'news__img',
+            },
+            {
+                error: () => {
+                    img.setAttribute(
+                        'src',
+                        'https://images.unsplash.com/photo-1639262498805-17c7dc422d37?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80'
+                    );
+                },
             }
-        } catch (error) {
-            console.log(error);
-            img.setAttribute(
-                'src',
-                'https://images.unsplash.com/photo-1476242906366-d8eb64c2f661?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1469&q=80'
-            );
-        }
+        );
 
+        parameter.urlToImage
+            ? img.setAttribute('src', `${parameter.urlToImage}`)
+            : img.setAttribute(
+                  'src',
+                  'https://images.unsplash.com/photo-1476242906366-d8eb64c2f661?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1469&q=80'
+              );
         return img;
     }
 
@@ -192,7 +210,7 @@ export class News {
         cardDetails.appendChild(this._createDate(parameter));
         cardDetails.appendChild(this._createArticleTitle(parameter));
         cardDetails.appendChild(this._createArticleContent(parameter));
-        cardDetails.appendChild(this._createLink(parameter));
+        cardDetails.appendChild(this._createCardFooter(parameter));
         return cardDetails;
     }
 
@@ -237,6 +255,12 @@ export class News {
         return article;
     }
 
+    _createCardFooter(parameter) {
+        const footer = createElement('div', { class: 'card__footer' });
+        footer.appendChild(this._createLink(parameter));
+        return footer;
+    }
+
     _createButton(className, innerText, event) {
         const button = createElement(
             'button',
@@ -247,18 +271,32 @@ export class News {
         return button;
     }
 
-    _createCardFooter() {
-        const footer = createElement('div', { class: 'footer' }, null, null);
-        footer.appendChild(this._createButton('btn btn-dark news__read--button', 'Read more'));
-        return footer;
-    }
-
     _createLink(parameter) {
         const link = createElement('a', {
             href: `${parameter.url}`,
             target: '_blank',
         });
-        link.appendChild(this._createCardFooter());
+        link.appendChild(this._createButton('btn btn-dark news__read--button', 'Read more'));
         return link;
+    }
+
+    _createFooter(array) {
+        this._footer = createElement('div', { class: 'footer news_footer' });
+        for (let i = 0; i < array.length; i++) {
+            this._pageNumber = createElement(
+                'button',
+                {
+                    id: `${i + 1}`,
+                    class: 'btn btn-light page__number--button',
+                    value: `${i + 1}`,
+                },
+                {
+                    click: this._insertPageNumber.bind(this, i, array),
+                },
+                `${i + 1}`
+            );
+            this._footer.appendChild(this._pageNumber);
+        }
+        this._newsWrapper.appendChild(this._footer);
     }
 }

@@ -14,7 +14,6 @@ export default class Router {
 
     _onNavigation() {
         this._routeChanged();
-        this._clearMenuItems();
         this._setActiveMenuItem();
     }
 
@@ -58,17 +57,9 @@ export default class Router {
         let items = document.querySelectorAll('.nav--item__link');
         items.forEach((item) =>
             item.addEventListener('click', () => {
+                const activeItem = document.querySelector('.active');
+                activeItem.classList.remove('active');
                 item.classList.add('active');
-            })
-        );
-    }
-
-    // To be fixed, does not work
-    _clearMenuItems() {
-        let items = document.querySelectorAll('.nav--item__link.active');
-        items.forEach((item) =>
-            item.addEventListener('click', () => {
-                item.classList.remove('active');
             })
         );
     }

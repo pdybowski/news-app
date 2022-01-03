@@ -1,6 +1,6 @@
 .weather__element {
     color: snow;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.5);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
     border-radius: 0.25rem;
     margin: 10px;

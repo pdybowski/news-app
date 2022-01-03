@@ -69,6 +69,7 @@ h1 {
     line-height: 30px;
     padding: 16px;
 }
+
 .nav--item__link {
     text-align: center;
     color: #ffffff;
@@ -88,6 +89,7 @@ h1 {
 .nav--item__link.active {
     color: rgb(255, 197, 6);
 }
+
 .overlay {
     visibility: hidden;
     position: fixed;
