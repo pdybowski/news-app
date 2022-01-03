@@ -1,7 +1,7 @@
-import { Spinner } from '../../shared';
+import { Spinner, Notification } from '../../shared';
 import { createElement as createEl, isDefined, createRow } from '../../utils';
 import { GovApi } from './govApi';
-// import './style.css';
+import './style.css';
 
 export class Government {
     constructor() {
@@ -14,14 +14,14 @@ export class Government {
         try {
             spinner.showSpinner();
             await this._fetchInitialData();
+            this._createPageContainer();
             // create a page
         } catch (e) {
-            throw new Error(e);
-            // new Notification().showError('Failed to load data', e);
+            // throw new Error(e);
+            new Notification().showError('Failed to load data', e);
         } finally {
             spinner.removeSpinner();
         }
-        this._createPageContainer();
 
         // this._createActionsBarContainer();
         // this._createResultsContainer();
@@ -39,65 +39,114 @@ export class Government {
     }
 
     _createContentContainer() {
-        const contentContainer = createEl('div', {
+        this.contentContainer = createEl('div', {
             class: 'd-flex flex-row',
         });
-        contentContainer.append(this._createSearchResultsContainer());
-        this.container.append(contentContainer);
+        this.contentContainer.append(this._createSearchResultsContainer());
+        this.container.append(this.contentContainer);
     }
 
     _createSearchResultsContainer() {
-        const searchResultsContainer = createEl('div', {
+        this.searchResultsContainer = createEl('div', {
+            id: 'resultsContainer',
             class: 'd-flex justify-content-center flex-wrap',
         });
-        return searchResultsContainer;
+        this.searchResultsContainer.append(this._populateCards());
+        this.contentContainer.append(this.searchResultsContainer);
+        // console.log('search results container ', this.`searchResultsContainer);
     }
 
-    _createSearchResultBox() {
-        const searchResultBox = createEl('div', {
-            class: 'd-flex flex-grow',
-        });
-    }
-
-    _createSearchResult(title, keywords, notes, id, link, author, created, modified, model) {
-        // title = title
-        // keywords = array containing keywords
-        //notes = description (needs to be wrapped)
-        // id = data id
-        // link = links.self --> link to data
-        // author = author
-        // created = createdAt
-        // modified = modifiedAt
-        // model = data type
-
-        const searchResult = createEl('div', {
-            class: 'd-flex flex-column align-items-center justify-content-center',
+    _createSearchResultBody(title, modified, desc) {
+        const searchResultBody = createEl('div', {
+            class: 'card-body',
         });
 
-        searchResult.append(this._createSearchResultTitle(), this._createSearchResultDescription());
+        console.log(searchResultBody);
+        // piece below works
+        searchResultBody.appendChild(this._createSearchResultTitle(title));
+        searchResultBody.appendChild(this._createSearchResultModifiedDate(modified));
+        searchResultBody.appendChild(this._createSearchResultDesc(desc));
+        return searchResultBody;
     }
 
-    _createSearchResultTitle() {
-        const createTitle = createEl('div');
-        return createTitle;
+    _createSearchResultTitle(title) {
+        const searchResultTitle = createEl(
+            'h5',
+            {
+                class: 'card-title',
+            },
+            null,
+            `${title}`
+        );
+        return searchResultTitle;
     }
 
-    _createSearchResultDescription() {
-        const createDesc = createEl('div');
-        return createDesc;
+    _createSearchResultDesc(desc) {
+        const searchResultDesc = createEl(
+            'p',
+            {
+                class: 'card-text',
+            },
+            null,
+            `${desc}`
+        );
+        return searchResultDesc;
     }
+
+    _createSearchResultModifiedDate(modifiedAt) {
+        const searchResultModifiedDate = createEl(
+            'h6',
+            {
+                class: 'card-subtitle mb-2 text-muted',
+            },
+            null,
+            `${modifiedAt}`
+        );
+        return searchResultModifiedDate;
+    }
+    _createSearchResultCard(title, desc, modified) {
+        const searchResultCard = createEl('div', {
+            class: 'card',
+        });
+        console.log('searchResultCard ', searchResultCard);
+        searchResultCard.append(this._createSearchResultBody(title, modified, desc));
+        // this._populateCards();
+        return searchResultCard;
+    }
+
+    _populateCards() {
+        const jsonData = this.initialData.data;
+        for (let el of jsonData) {
+            this.row = createRow();
+            // console.log(this.row);
+            this.title = el.attributes.title;
+            this.desc = el.attributes.notes;
+            this.modified = el.attributes.modified.slice(0, 10);
+            this.row.append(this._createSearchResultCard(this.title, this.desc, this.modified));
+            console.log('searchResultsContainer ', this.searchResultsContainer);
+            this.searchResultsContainer.append(this.row);
+            // console.log(title, desc, modified);
+        }
+        return this.row;
+    }
+
     _createSearchContainer() {
         const searchContainer = createEl('div', {
-            class: 'input-group rounded col-6 align-items-center',
+            class: 'd-flex flex-row search__container align-items-center',
         });
 
-        const fillSpace = createEl('div', {
-            class: 'col-md-3',
-        });
-        searchContainer.append(this._createSearchInput(), this._createSearchButton());
+        searchContainer.append(this._createSearch());
         this.container.append(searchContainer);
     }
 
+    _createSearch() {
+        const search = createEl('div', {
+            class: 'input-group rounded',
+        });
+
+        search.append(this._createSearchInput(), this._createSearchButton());
+        return search;
+    }
     _createSearchInput() {
         const searchInput = createEl('input', {
             class: 'form-control rounded',
@@ -122,9 +171,12 @@ export class Government {
     }
 
     async _fetchInitialData() {
-        let data = await this.api.fetch();
-        console.log('Test ', data);
-        return data;
+        this.initialData = await this.api.fetch('');
+
+        // let paginate = await this.api.paginate(1, 10);
+        // console.log('Paginate ', paginate);
+        console.log('Test ', this.initialData);
+        // return data, paginate;
     }
     // async _onSearchApplied() {
     //     const sortAvailableTypes = ['title', 'date', 'views_count'];
