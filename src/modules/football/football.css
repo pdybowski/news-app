@@ -1,7 +1,3 @@
-#main{
-    overflow: scroll;
-}
-
 .football__header {
     padding: 10px 0;
 }
@@ -39,7 +35,7 @@
     padding-top: 15px;
 }
 
-.season__container{
+.season__container {
     margin: 15px 0;
     color: rgb(17, 14, 14);
 }
@@ -61,7 +57,7 @@
 }
 
 .leagueHeader__season--year:hover {
-    border-bottom: 2px solid #C7DBD2;
+    border-bottom: 2px solid #c7dbd2;
 }
 
 .leagues__box--button {
@@ -84,13 +80,13 @@
     box-shadow: inset 400px 0 0 0 #3d3947;
 }
 
-.league__table-container{
+.league__table-container {
     position: relative;
     max-height: 70vh;
     overflow: scroll;
 }
 
-.bootstarp__icon--arrow{
+.bootstarp__icon--arrow {
     font-size: 3rem;
     cursor: pointer;
 
