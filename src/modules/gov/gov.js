@@ -31,7 +31,7 @@ export class Government {
     _createPageContainer() {
         // create containers and place them in desired spots
         this.container = createEl('div', {
-            class: 'row mt-5',
+            class: 'container mt-5',
         });
         this.mainView.append(this.container);
         this._createSearchContainer();
@@ -40,7 +40,8 @@ export class Government {
 
     _createContentContainer() {
         this.contentContainer = createEl('div', {
-            class: 'd-flex flex-row',
+            id: 'contentContainer',
+            class: 'd-flex flex-row ',
         });
         this.contentContainer.append(this._createSearchResultsContainer());
         this.container.append(this.contentContainer);
@@ -52,28 +53,29 @@ export class Government {
             class: 'd-flex justify-content-center flex-wrap',
         });
         this.searchResultsContainer.append(this._populateCards());
-        this.contentContainer.append(this.searchResultsContainer);
+        this.contentContainer.appendChild(this.searchResultsContainer);
         // console.log('search results container ', this.`searchResultsContainer);
     }
 
-    _createSearchResultBody(title, modified, desc) {
+    _createSearchResultBody(title, modified, desc, keywords) {
         const searchResultBody = createEl('div', {
             class: 'card-body',
         });
 
-        console.log(searchResultBody);
+        // console.log(searchResultBody);
         // piece below works
         searchResultBody.appendChild(this._createSearchResultTitle(title));
-        searchResultBody.appendChild(this._createSearchResultModifiedDate(modified));
+        searchResultBody.appendChild(this._createSearchResultKeywords(keywords));
         searchResultBody.appendChild(this._createSearchResultDesc(desc));
+        searchResultBody.appendChild(this._createSearchResultModifiedDate(modified));
         return searchResultBody;
     }
 
     _createSearchResultTitle(title) {
         const searchResultTitle = createEl(
-            'h5',
+            'h3',
             {
-                class: 'card-title',
+                class: 'card-header',
             },
             null,
             `${title}`
@@ -97,42 +99,57 @@ export class Government {
         const searchResultModifiedDate = createEl(
             'h6',
             {
-                class: 'card-subtitle mb-2 text-muted',
+                class: 'card-subtitle m-3',
             },
             null,
-            `${modifiedAt}`
+            `Last modified: ${modifiedAt}`
         );
         return searchResultModifiedDate;
     }
-    _createSearchResultCard(title, desc, modified) {
+
+    _createSearchResultKeywords(keywords) {
+        const searchResultKeywords = createEl(
+            'h6',
+            {
+                class: 'card-subtitle m-3 text-muted align-right',
+            },
+            null,
+            `Keywords: ${keywords}`
+        );
+
+        return searchResultKeywords;
+    }
+    _createSearchResultCard(title, desc, modified, keywords) {
         const searchResultCard = createEl('div', {
             class: 'card',
         });
-        console.log('searchResultCard ', searchResultCard);
-        searchResultCard.append(this._createSearchResultBody(title, modified, desc));
-        // this._populateCards();
+        // console.log('searchResultCard ', searchResultCard);
+        searchResultCard.append(this._createSearchResultBody(title, modified, desc, keywords));
         return searchResultCard;
     }
 
     _populateCards() {
         const jsonData = this.initialData.data;
         for (let el of jsonData) {
-            this.row = createRow();
-            // console.log(this.row);
-            this.title = el.attributes.title;
-            this.desc = el.attributes.notes;
-            this.modified = el.attributes.modified.slice(0, 10);
-            this.row.append(this._createSearchResultCard(this.title, this.desc, this.modified));
-            console.log('searchResultsContainer ', this.searchResultsContainer);
+            this.row = createEl('div', {
+                class: 'card-deck p-3',
+            });
+            let title = this._removeRedundantHTMLTags(el.attributes.title);
+            let desc = this._removeRedundantHTMLTags(el.attributes.notes);
+            let modified = el.attributes.modified.slice(0, 10);
+            let keywords = el.attributes.keywords.join(', ');
+            console.log(keywords);
+            this.row.append(this._createSearchResultCard(title, desc, modified, keywords));
             this.searchResultsContainer.append(this.row);
-            // console.log(title, desc, modified);
         }
-        return this.row;
     }
 
+    _removeRedundantHTMLTags(str) {
+        return str.replace(/<\/?[^>]+>/gi, '');
+    }
     _createSearchContainer() {
         const searchContainer = createEl('div', {
-            class: 'd-flex flex-row search__container align-items-center',
+            class: 'row content-md-center align-self-center w-50',
         });
 
         searchContainer.append(this._createSearch());
@@ -171,9 +188,9 @@ export class Government {
     }
 
     async _fetchInitialData() {
-        this.initialData = await this.api.fetch('');
+        // this.initialData = await this.api.fetch('');
 
-        // let paginate = await this.api.paginate(1, 10);
+        this.initialData = await this.api.paginate(1, 10);
         // console.log('Paginate ', paginate);
         console.log('Test ', this.initialData);
         // return data, paginate;
