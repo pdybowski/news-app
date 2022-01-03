@@ -27,7 +27,6 @@ export class BurgerMenu {
         const link = document.querySelector('.nav--item__link');
         const logo = createElement('img', {
             class: 'home__icon',
-            //src: './content/img/favicon.ico',
             src: 'https://img.icons8.com/external-kiranshastry-gradient-kiranshastry/64/000000/external-news-news-kiranshastry-gradient-kiranshastry.png',
             alt: 'news logo',
         });
