@@ -14,7 +14,7 @@ export const HEALTH_API = {
 
 export const SPORT_API = {
     API_BASE_URL:
-        'https://api-football-standings.azharimm.site/leagues/ger.1/standings?season=2021&sort=asc',
+        'https://api-football-standings.azharimm.site/',
 };
 
 export const JOBS_API = {

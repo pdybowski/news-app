@@ -1,17 +1,97 @@
-.football__button {
-    padding: 20px 40px;
-    margin: 20px;
-    cursor: pointer;
-    background: none;
-    color: rgb(34, 5, 5);
-    font-size: 18px;
-    border: 3px solid #ddd;
-    border-radius: 8px;
-    transition: 0.3s;
-    text-transform: uppercase;
+.football__header {
+    padding: 10px 0;
 }
 
-.football__button:hover {
-    background-color: #ddd;
-    color: #000;
+.leagues__container {
+    background-color: rgba(185, 185, 185, 0.623);
+    overflow: scroll;
+    height: auto;
+
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px,
+        rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px,
+        rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.leagues__box {
+    border: 2px solid #2e2a38;
+    box-shadow: inset 0 0 0 0 #3d3947;
+    width: 250px;
+    height: 400px;
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+.leagues__box:hover {
+    -webkit-box-shadow: 0px 0px 42px 6px #3d3947;
+    -moz-box-shadow: 0px 0px 42px 6px #3d3947;
+    box-shadow: 0px 0px 42px 6px #3d3947;
+}
+
+.leagues__box--image {
+    height: 50%;
+}
+
+.leagues__box--name {
+    padding-top: 15px;
+}
+
+.season__container {
+    margin: 15px 0;
+    color: rgb(17, 14, 14);
+}
+
+.leagueHeader__season {
+    display: flex;
+    flex-direction: row;
+
+    list-style: none;
+    font-weight: 900;
+    padding: 5px 20px;
+    display: inline;
+}
+
+.leagueHeader__season--year {
+    display: inline-block;
+    padding-right: 10px;
+    cursor: pointer;
+}
+
+.leagueHeader__season--year:hover {
+    border-bottom: 2px solid #c7dbd2;
+}
+
+.leagues__box--button {
+    color: rgb(22, 22, 22);
+    border: 2px solid #2e2a38;
+    border-radius: 0px;
+    padding: 12px 30px;
+    display: inline-block;
+    font-size: 14px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: inset 0 0 0 0 #3d3947;
+    -webkit-transition: ease-out 0.4s;
+    -moz-transition: ease-out 0.4s;
+    transition: ease-out 0.4s;
+}
+
+.leagues__box--button:hover {
+    color: rgb(255, 253, 253);
+    box-shadow: inset 400px 0 0 0 #3d3947;
+}
+
+.league__table-container {
+    position: relative;
+    max-height: 70vh;
+    overflow: scroll;
+}
+
+.bootstarp__icon--arrow {
+    font-size: 3rem;
+    cursor: pointer;
+
+    z-index: 1000;
+    width: 50px;
+    height: 50px;
+    color: black;
 }
