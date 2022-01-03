@@ -30,6 +30,3 @@ export function replacePolishAccents(value) {
     }
     return value;
 }
-
-// console.log(replacePolishAccents('ósmoklasisty'));
-// console.log(replacePolishAccents('ŻÓŁTY'));
