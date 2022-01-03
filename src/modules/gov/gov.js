@@ -1,5 +1,5 @@
 import { Spinner, Notification } from '../../shared';
-import { createElement as createEl, isDefined, createRow } from '../../utils';
+import { createElement as createEl, removeRedundantHtmlTags } from '../../utils';
 import { GovApi } from './govApi';
 import './style.css';
 
@@ -19,19 +19,16 @@ export class Government {
         } catch (e) {
             // throw new Error(e);
             new Notification().showError('Failed to load data', e);
+            console.log(e);
         } finally {
             spinner.removeSpinner();
         }
-
-        // this._createActionsBarContainer();
-        // this._createResultsContainer();
-        // this._createPaginationBarContainer();
     }
 
     _createPageContainer() {
         // create containers and place them in desired spots
         this.container = createEl('div', {
-            class: 'container mt-5',
+            class: 'row mt-5 justify-content-center align-items-center',
         });
         this.mainView.append(this.container);
         this._createSearchContainer();
@@ -39,22 +36,26 @@ export class Government {
     }
 
     _createContentContainer() {
-        this.contentContainer = createEl('div', {
+        const contentContainer = createEl('div', {
             id: 'contentContainer',
-            class: 'd-flex flex-row ',
+            class: 'd-flex flex-row',
         });
-        this.contentContainer.append(this._createSearchResultsContainer());
-        this.container.append(this.contentContainer);
+        contentContainer.append(this._createSearchResultsContainer());
+        this.container.append(contentContainer);
     }
 
     _createSearchResultsContainer() {
-        this.searchResultsContainer = createEl('div', {
+        const searchResultsContainer = createEl('div', {
             id: 'resultsContainer',
             class: 'd-flex justify-content-center flex-wrap',
         });
-        this.searchResultsContainer.append(this._populateCards());
-        this.contentContainer.appendChild(this.searchResultsContainer);
-        // console.log('search results container ', this.`searchResultsContainer);
+        const elements = this._populateCards();
+
+        elements.forEach((element) => {
+            searchResultsContainer.appendChild(element);
+        });
+        // console.log('search results container ', searchResultsContainer);
+        return searchResultsContainer;
     }
 
     _createSearchResultBody(title, modified, desc, keywords) {
@@ -87,7 +88,7 @@ export class Government {
         const searchResultDesc = createEl(
             'p',
             {
-                class: 'card-text',
+                class: 'card-text p-3',
             },
             null,
             `${desc}`
@@ -121,7 +122,7 @@ export class Government {
     }
     _createSearchResultCard(title, desc, modified, keywords) {
         const searchResultCard = createEl('div', {
-            class: 'card',
+            class: 'card w-80',
         });
         // console.log('searchResultCard ', searchResultCard);
         searchResultCard.append(this._createSearchResultBody(title, modified, desc, keywords));
@@ -129,27 +130,25 @@ export class Government {
     }
 
     _populateCards() {
+        let arrayOfElements = [];
         const jsonData = this.initialData.data;
-        for (let el of jsonData) {
-            this.row = createEl('div', {
+        jsonData.forEach((el) => {
+            const row = createEl('div', {
                 class: 'card-deck p-3',
             });
-            let title = this._removeRedundantHTMLTags(el.attributes.title);
-            let desc = this._removeRedundantHTMLTags(el.attributes.notes);
+            let title = removeRedundantHtmlTags(el.attributes.title);
+            let desc = removeRedundantHtmlTags(el.attributes.notes);
             let modified = el.attributes.modified.slice(0, 10);
             let keywords = el.attributes.keywords.join(', ');
-            console.log(keywords);
-            this.row.append(this._createSearchResultCard(title, desc, modified, keywords));
-            this.searchResultsContainer.append(this.row);
-        }
+            row.append(this._createSearchResultCard(title, desc, modified, keywords));
+            arrayOfElements.push(row);
+        });
+        return arrayOfElements;
     }
 
-    _removeRedundantHTMLTags(str) {
-        return str.replace(/<\/?[^>]+>/gi, '');
-    }
     _createSearchContainer() {
         const searchContainer = createEl('div', {
-            class: 'row content-md-center align-self-center w-50',
+            class: 'col-8 col-sm-6 content-md-center align-self-center flex-nowrap',
         });
 
         searchContainer.append(this._createSearch());
