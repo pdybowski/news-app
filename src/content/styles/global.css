@@ -63,6 +63,7 @@ h1 {
     background-color: rgb(64, 37, 214);
     width: 100%;
     position: fixed;
+    z-index: 1;
 }
 
 .nav--item {
