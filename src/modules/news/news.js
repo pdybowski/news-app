@@ -22,7 +22,7 @@ export class News {
         const spinner = new Spinner();
         try {
             spinner.showSpinner();
-            const array = await this._api.getTopNews('top-headlines');
+            const array = await this._api.getTopNews('top-headlines?');
             this._data = array.articles;
             this._createArticlesArray(this._data, 4);
         } catch (error) {
@@ -38,7 +38,14 @@ export class News {
             spinner.showSpinner();
             const user_array = await this._api.getSearchedNews(keyword);
             this.user_data = user_array.articles;
-            this._createArticlesArray(this.user_data, 4);
+            if (this.user_data.length == 0) {
+                this._onSearchResultNull();
+            } else if (this.user_data.length < 8) {
+                const slicedData = this.user_data.slice(0, 4);
+                this._displaySearchResult(slicedData);
+            } else {
+                this._createArticlesArray(this.user_data, 4);
+            }
         } catch (error) {
             new Notification().showError('Fetch news data error', error);
         } finally {
@@ -56,35 +63,41 @@ export class News {
             });
             this._searchData(newKeyword);
         }
-        this._footer ? this._newsWrapper.removeChild(this._footer) : null;
+        if (this._footer.parentElement === this._newsWrapper && newKeyword) {
+            this._newsWrapper.removeChild(this._footer);
+        }
+        this._clearSearchResultNull();
         input.value = null;
     }
 
     _createArticlesArray(data, size) {
         this._pageSize = size;
         this._arrayOfArticles = [];
-        for (var i = 0; i < data.length; i += this._pageSize) {
+        for (let i = 0; i < 8; i += this._pageSize) {
             this._arrayOfArticles.push(data.slice(i, i + this._pageSize));
         }
         this._createFooter(this._arrayOfArticles);
-        this._displayArticles(); // displays article after view is rendered
+        this._displayArticles();
     }
 
     async _displayArticles(number = 0, array = this._arrayOfArticles) {
-        try {
-            for (let i = 0; i < this._pageSize; i++) {
-                await this._container.appendChild(this._createCard(array[number][i]));
-            }
-        } catch (error) {
-            this._onSearchResultNull();
+        for (let i = 0; i < this._pageSize; i++) {
+            await this._container.appendChild(this._createCard(array[number][i]));
         }
+        this._container.scroll(0, 0);
+    }
+
+    _displaySearchResult(array) {
+        array.forEach((article) => {
+            this._container.appendChild(this._createCard(article));
+        });
     }
 
     _onSearchResultNull() {
-        let error_container = createElement('div', {
+        const error_container = createElement('div', {
             class: 'news__error--container',
         });
-        let error_info = createElement(
+        const error_info = createElement(
             'div',
             { class: 'news__error--info' },
             null,
@@ -94,12 +107,19 @@ export class News {
         this._container.appendChild(error_container);
     }
 
-    _insertPageNumber(number) {
+    _clearSearchResultNull() {
+        const error_container = document.querySelector('.news__error--container');
+        if (error_container && error_container.parentElement === this._container) {
+            this._container.removeChild(error_container);
+        }
+    }
+
+    _insertPageNumber(number, array) {
         const cards = document.querySelectorAll('.news__card');
         cards.forEach((i) => {
             this._container.removeChild(i);
         });
-        this._displayArticles(number);
+        this._displayArticles(number, array);
     }
 
     _createNewsWrapper() {
@@ -150,7 +170,7 @@ export class News {
     _onSubmit(e) {
         e.preventDefault();
         this._searchKeyword();
-        return false; //prevents reloading the page after submitting
+        return false;
     }
 
     _createSearchFavicon() {
@@ -196,8 +216,8 @@ export class News {
             }
         );
 
-        parameter.urlToImage
-            ? img.setAttribute('src', `${parameter.urlToImage}`)
+        parameter.image
+            ? img.setAttribute('src', `${parameter.image}`)
             : img.setAttribute(
                   'src',
                   'https://images.unsplash.com/photo-1476242906366-d8eb64c2f661?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1469&q=80'
