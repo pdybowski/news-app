@@ -7,14 +7,14 @@ export class NewsApi extends API {
     }
 
     fetch(query) {
-        return super.fetch(NEWS_API.API_BASE_URL, null, `${query}&apiKey=${NEWS_API.API_KEY}`);
+        return super.fetch(NEWS_API.API_BASE_URL, null, `${query}&token=${NEWS_API.API_KEY}`);
     }
 
     getTopNews(header) {
-        return this.fetch(`${header}?language=en`);
+        return this.fetch(`${header}&lang=en`);
     }
 
     getSearchedNews(keyword) {
-        return this.fetch(`everything?language=en&q=${keyword}`);
+        return this.fetch(`search?q=${keyword}&lang=en`);
     }
 }
