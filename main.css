@@ -63,6 +63,7 @@ h1 {
     background-color: rgb(64, 37, 214);
     width: 100%;
     position: fixed;
+    z-index: 1;
 }
 
 .nav--item {
@@ -682,6 +683,10 @@ p {
     display: none;
 }
 
+.home__icon {
+    display: none;
+}
+
 @media screen and (max-width: 600px) {
     li:nth-child(2),
     li:nth-child(3),
@@ -690,23 +695,30 @@ p {
         display: none;
     }
 
+    .home__icon {
+        display: block;
+        width: 50px;
+        height: 50px;
+    }
+
     .hamburger {
         display: inline-block;
         background-color: transparent;
         border: 0;
 
         margin-right: 2rem;
-        margin-top: 0.5rem;
-        padding: 10px;
+        margin-top: 0.4rem;
+        padding: 16px;
 
-        position: absolute;
+        position: fixed;
         right: 0;
         top: 0;
+        z-index: 1;
     }
 
     .hamburger__box {
         width: 40px;
-        height: 24px;
+        height: 40px;
         display: inline-block;
         position: relative;
     }
