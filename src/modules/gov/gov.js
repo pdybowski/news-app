@@ -1,5 +1,5 @@
 import { Spinner, Notification } from '../../shared';
-import { createElement as createEl, removeRedundantHtmlTags } from '../../utils';
+import { createElement as createEl, isDefined, removeRedundantHtmlTags } from '../../utils';
 import { GovApi } from './govApi';
 import './style.css';
 
@@ -7,12 +7,12 @@ export class Government {
     constructor() {
         this.mainView = document.querySelector('#main');
         this.api = new GovApi();
+        this.spinner = new Spinner();
     }
 
     async start() {
-        const spinner = new Spinner();
         try {
-            spinner.showSpinner();
+            this.spinner.showSpinner();
             await this._fetchInitialData();
             this._createPageContainer();
             // create a page
@@ -21,7 +21,7 @@ export class Government {
             new Notification().showError('Failed to load data', e);
             console.log(e);
         } finally {
-            spinner.removeSpinner();
+            this.spinner.removeSpinner();
         }
     }
 
@@ -49,11 +49,14 @@ export class Government {
             id: 'resultsContainer',
             class: 'd-flex justify-content-center flex-wrap',
         });
-        const elements = this._populateCards();
 
-        elements.forEach((element) => {
-            searchResultsContainer.appendChild(element);
-        });
+        if (isDefined(document.querySelectorbyId('resultsContainer'))) {
+            const elements = this._populateCards(this.initialData.data);
+            elements.forEach((element) => {
+                searchResultsContainer.appendChild(element);
+            });
+        }
+
         // console.log('search results container ', searchResultsContainer);
         return searchResultsContainer;
     }
@@ -108,7 +111,7 @@ export class Government {
         return searchResultModifiedDate;
     }
 
-    _createSearchResultKeywords(keywords) {
+    _createSearchResultKeywords(keywords = false) {
         const searchResultKeywords = createEl(
             'h6',
             {
@@ -122,24 +125,30 @@ export class Government {
     }
     _createSearchResultCard(title, desc, modified, keywords) {
         const searchResultCard = createEl('div', {
-            class: 'card w-80',
+            class: 'card',
         });
         // console.log('searchResultCard ', searchResultCard);
         searchResultCard.append(this._createSearchResultBody(title, modified, desc, keywords));
         return searchResultCard;
     }
 
-    _populateCards() {
+    _populateCards(query) {
         let arrayOfElements = [];
-        const jsonData = this.initialData.data;
-        jsonData.forEach((el) => {
+        // console.log(typeof query);
+        query.forEach((el) => {
             const row = createEl('div', {
                 class: 'card-deck p-3',
             });
+            console.log(el.attributes.keywords);
             let title = removeRedundantHtmlTags(el.attributes.title);
             let desc = removeRedundantHtmlTags(el.attributes.notes);
             let modified = el.attributes.modified.slice(0, 10);
-            let keywords = el.attributes.keywords.join(', ');
+            let keywords;
+            if (el.attributes.keywords !== undefined) {
+                keywords = el.attributes.keywords.join(', ');
+            } else {
+                keywords = false;
+            }
             row.append(this._createSearchResultCard(title, desc, modified, keywords));
             arrayOfElements.push(row);
         });
@@ -147,9 +156,13 @@ export class Government {
     }
 
     _createSearchContainer() {
-        const searchContainer = createEl('div', {
-            class: 'col-8 col-sm-6 content-md-center align-self-center flex-nowrap',
-        });
+        const searchContainer = createEl(
+            'form',
+            {
+                class: 'col-8 col-sm-6 content-md-center align-self-center flex-nowrap',
+            },
+            { submit: this._fetchSearchResults.bind(this) }
+        );
 
         searchContainer.append(this._createSearch());
         this.container.append(searchContainer);
@@ -165,9 +178,11 @@ export class Government {
     }
     _createSearchInput() {
         const searchInput = createEl('input', {
+            id: 'searchInput',
             class: 'form-control rounded',
             type: 'search',
             placeholder: 'Search',
+            autocomplete: 'off',
         });
         return searchInput;
     }
@@ -187,17 +202,33 @@ export class Government {
     }
 
     async _fetchInitialData() {
-        // this.initialData = await this.api.fetch('');
-
-        this.initialData = await this.api.paginate(1, 10);
-        // console.log('Paginate ', paginate);
-        console.log('Test ', this.initialData);
-        // return data, paginate;
+        this.initialData = await this.api.fetch('', 1, 10);
+        // console.log('Test ', this.initialData);
     }
-    // async _onSearchApplied() {
-    //     const sortAvailableTypes = ['title', 'date', 'views_count'];
-    // }
-    // fetchData() {
-    //     this._onSearchApplied();
-    // }
+
+    async _fetchSearchResults(e) {
+        const input = document.getElementById('searchInput');
+        const currentResults = document.getElementById('resultsContainer');
+        console.log('User input', input.value);
+        try {
+            this.spinner.showSpinner();
+            if (input !== null) {
+                this.data = await this.api.getItemByQuery(input.value);
+                currentResults.innerHTML = '';
+                console.log('Data ', this.data);
+                console.log('results Container', currentResults);
+                currentResults.append(this._populateCards(this.data));
+            }
+            // create a page
+        } catch (e) {
+            // throw new Error(e);
+            // new Notification().showError('Failed to load data', e);
+            console.log(e);
+        } finally {
+            this.spinner.removeSpinner();
+        }
+        e.preventDefault();
+
+        return false;
+    }
 }
