@@ -679,6 +679,14 @@ p {
     color: black;
 }
 
+.search__container {
+    max-width: 600px;
+}
+
+.input-group .btn {
+    z-index: 0;
+}
+
 .hamburger {
     display: none;
 }
