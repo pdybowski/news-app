@@ -1,6 +1,6 @@
 export const NEWS_API = {
-    API_BASE_URL: 'https://newsapi.org/v2/',
-    API_KEY: '2c029fdadd124ccb953f39978e4a794a',
+    API_BASE_URL: 'https://gnews.io/api/v4/',
+    API_KEY: '5987a6bc90f03ff051f6d3d4efd2eb2a',
 };
 
 export const WEATHER_API = {
@@ -13,8 +13,7 @@ export const HEALTH_API = {
 };
 
 export const SPORT_API = {
-    API_BASE_URL:
-        'https://api-football-standings.azharimm.site/leagues/ger.1/standings?season=2021&sort=asc',
+    API_BASE_URL: 'https://api-football-standings.azharimm.site/',
 };
 
 export const JOBS_API = {
