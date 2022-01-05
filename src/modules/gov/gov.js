@@ -16,7 +16,6 @@ export class Government {
     }
 
     _createPageContainer() {
-        // create containers and place them in desired spots
         this.container = createEl('div', {
             class: 'row mt-5 justify-content-center align-items-center',
         });
@@ -30,9 +29,7 @@ export class Government {
             id: 'contentContainer',
             class: 'd-flex flex-row',
         });
-        // this.contentContainer.append(this._createSearchResultsContainer());
         this.container.append(this.contentContainer);
-        // this.contentContainer.append(this.searchResultsContainer);
         this._createSearchResultsContainer();
     }
 
@@ -41,21 +38,6 @@ export class Government {
             id: 'resultsContainer',
             class: 'd-flex justify-content-center flex-wrap w-100',
         });
-
-        // const input = document.getElementById('searchInput');
-
-        // console.log(this.searchResultsContainer);
-        // let elements = this._populateCards(this.data);
-        // elements.forEach((element) => {
-        //     searchResultsContainer.appendChild(element);
-        // });
-
-        // let elements = this._fetchSearchResults();
-        // elements.forEach((element) => {
-        //     searchResultsContainer.appendChild(element);
-        // });
-
-        // return searchResultsContainer;
         this.contentContainer.append(this.searchResultsContainer);
     }
 
@@ -129,9 +111,6 @@ export class Government {
 
     _populateCards(query) {
         let arrayOfElements = [];
-        // query = this.data;
-        console.log(this.data);
-        console.log('query ', query);
         query.forEach((el) => {
             const row = createEl('div', {
                 class: 'card-deck p-3 w-100',
@@ -229,11 +208,9 @@ export class Government {
             this.spinner.showSpinner();
             const json = await this.api.getItemByQuery(`${query}`);
             this.data = json;
-            console.log('Test ', this.data);
             this._populateCards(this.data.data);
         } catch (e) {
             new Notification().showError('Failed to load data', e);
-            console.log(e);
         } finally {
             this.spinner.removeSpinner();
         }
@@ -242,7 +219,6 @@ export class Government {
     async _fetchSearchResults() {
         const input = document.getElementById('searchInput');
         const currentResults = document.getElementById('resultsContainer');
-        console.log('User input', input.value);
         try {
             this.spinner.showSpinner();
             if (input !== null) {
