@@ -29,6 +29,8 @@ Single page application written in Javascript available on [https://pdybowski.gi
 
 -   [Accuweather](https://www.accuweather.com/)
 -   [NewsApi](https://newsapi.org/)
+-   [FootballApi](https://github.com/azharimm/football-standings-api)
+-   [PolishGovernmentApi](https://dane.gov.pl/en)
 
 ## Authors
 
