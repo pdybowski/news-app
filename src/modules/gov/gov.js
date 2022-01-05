@@ -213,9 +213,13 @@ export class Government {
             class: 'btn btn-primary btn-lg d-flex align-items-center justify-content-center text-decoration-none',
         });
         searchBtnContainer.setAttribute('href', 'javascript:void(0)');
-        const searchBtn = createEl('i', {
-            class: 'fas fa-search',
-        });
+        const searchBtn = createEl(
+            'i',
+            {
+                class: 'fas fa-search',
+            },
+            { click: this._submit.bind(this) }
+        );
         searchBtnContainer.append(searchBtn);
         return searchBtnContainer;
     }
