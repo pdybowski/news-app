@@ -39,7 +39,7 @@ export class Government {
     async _createSearchResultsContainer() {
         this.searchResultsContainer = createEl('div', {
             id: 'resultsContainer',
-            class: 'd-flex justify-content-center flex-wrap',
+            class: 'd-flex justify-content-center flex-wrap w-100',
         });
 
         // const input = document.getElementById('searchInput');
@@ -134,7 +134,7 @@ export class Government {
         console.log('query ', query);
         query.forEach((el) => {
             const row = createEl('div', {
-                class: 'card-deck p-3',
+                class: 'card-deck p-3 w-100',
             });
             let title = removeRedundantHtmlTags(el.attributes.title);
             let desc = removeRedundantHtmlTags(el.attributes.notes);
@@ -253,6 +253,18 @@ export class Government {
             new Notification().showError('Failed to load data', e);
         } finally {
             this.spinner.removeSpinner();
+        }
+
+        if (currentResults.children.length === 0) {
+            const title = 'Brak danych';
+            const desc = 'Nie znaleziono żadnych artykułów spełniających kryteria wyszukiwania';
+            const modified = ' ';
+            const keywords = '';
+            const row = createEl('div', {
+                class: 'card-deck p-3 w-100',
+            });
+            row.append(this._createSearchResultCard(title, desc, modified, keywords));
+            this.searchResultsContainer.append(row);
         }
     }
 }
