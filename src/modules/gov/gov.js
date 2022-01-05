@@ -11,18 +11,8 @@ export class Government {
     }
 
     async start() {
-        try {
-            this.spinner.showSpinner();
-            await this._fetchInitialData();
-            this._createPageContainer();
-            // create a page
-        } catch (e) {
-            // throw new Error(e);
-            new Notification().showError('Failed to load data', e);
-            console.log(e);
-        } finally {
-            this.spinner.removeSpinner();
-        }
+        this._fetchData('');
+        this._createPageContainer();
     }
 
     _createPageContainer() {
@@ -36,37 +26,43 @@ export class Government {
     }
 
     _createContentContainer() {
-        const contentContainer = createEl('div', {
+        this.contentContainer = createEl('div', {
             id: 'contentContainer',
             class: 'd-flex flex-row',
         });
-        contentContainer.append(this._createSearchResultsContainer());
-        this.container.append(contentContainer);
+        // this.contentContainer.append(this._createSearchResultsContainer());
+        this.container.append(this.contentContainer);
+        // this.contentContainer.append(this.searchResultsContainer);
+        this._createSearchResultsContainer();
     }
 
-    _createSearchResultsContainer() {
-        const searchResultsContainer = createEl('div', {
+    async _createSearchResultsContainer() {
+        this.searchResultsContainer = createEl('div', {
             id: 'resultsContainer',
             class: 'd-flex justify-content-center flex-wrap',
         });
 
-        if (isDefined(document.querySelectorbyId('resultsContainer'))) {
-            const elements = this._populateCards(this.initialData.data);
-            elements.forEach((element) => {
-                searchResultsContainer.appendChild(element);
-            });
-        }
+        // const input = document.getElementById('searchInput');
 
-        // console.log('search results container ', searchResultsContainer);
-        return searchResultsContainer;
+        // console.log(this.searchResultsContainer);
+        // let elements = this._populateCards(this.data);
+        // elements.forEach((element) => {
+        //     searchResultsContainer.appendChild(element);
+        // });
+
+        // let elements = this._fetchSearchResults();
+        // elements.forEach((element) => {
+        //     searchResultsContainer.appendChild(element);
+        // });
+
+        // return searchResultsContainer;
+        this.contentContainer.append(this.searchResultsContainer);
     }
 
     _createSearchResultBody(title, modified, desc, keywords) {
         const searchResultBody = createEl('div', {
             class: 'card-body',
         });
-
-        // console.log(searchResultBody);
         // piece below works
         searchResultBody.appendChild(this._createSearchResultTitle(title));
         searchResultBody.appendChild(this._createSearchResultKeywords(keywords));
@@ -127,19 +123,19 @@ export class Government {
         const searchResultCard = createEl('div', {
             class: 'card',
         });
-        // console.log('searchResultCard ', searchResultCard);
         searchResultCard.append(this._createSearchResultBody(title, modified, desc, keywords));
         return searchResultCard;
     }
 
     _populateCards(query) {
         let arrayOfElements = [];
-        // console.log(typeof query);
+        // query = this.data;
+        console.log(this.data);
+        console.log('query ', query);
         query.forEach((el) => {
             const row = createEl('div', {
                 class: 'card-deck p-3',
             });
-            console.log(el.attributes.keywords);
             let title = removeRedundantHtmlTags(el.attributes.title);
             let desc = removeRedundantHtmlTags(el.attributes.notes);
             let modified = el.attributes.modified.slice(0, 10);
@@ -152,7 +148,10 @@ export class Government {
             row.append(this._createSearchResultCard(title, desc, modified, keywords));
             arrayOfElements.push(row);
         });
-        return arrayOfElements;
+
+        for (let el of arrayOfElements) {
+            this.searchResultsContainer.append(el);
+        }
     }
 
     _createSearchContainer() {
@@ -161,11 +160,17 @@ export class Government {
             {
                 class: 'col-8 col-sm-6 content-md-center align-self-center flex-nowrap',
             },
-            { submit: this._fetchSearchResults.bind(this) }
+            { submit: this._submit.bind(this) }
         );
 
         searchContainer.append(this._createSearch());
         this.container.append(searchContainer);
+    }
+
+    _submit(e) {
+        e.preventDefault();
+        this._fetchSearchResults();
+        return false;
     }
 
     _createSearch() {
@@ -176,14 +181,28 @@ export class Government {
         search.append(this._createSearchInput(), this._createSearchButton());
         return search;
     }
+
     _createSearchInput() {
-        const searchInput = createEl('input', {
-            id: 'searchInput',
-            class: 'form-control rounded',
-            type: 'search',
-            placeholder: 'Search',
-            autocomplete: 'off',
-        });
+        const searchInput = createEl(
+            'input',
+            {
+                id: 'searchInput',
+                class: 'form-control rounded',
+                type: 'search',
+                placeholder: 'Search',
+                autocomplete: 'off',
+            },
+            {
+                focus: () => {
+                    const searchInput = document.getElementById('searchInput');
+                    if (searchInput.focus()) {
+                        searchInput.placeholder = '';
+                    } else {
+                        searchInput.placeholder = 'Search';
+                    }
+                },
+            }
+        );
         return searchInput;
     }
 
@@ -201,34 +220,39 @@ export class Government {
         return searchBtnContainer;
     }
 
-    async _fetchInitialData() {
-        this.initialData = await this.api.fetch('', 1, 10);
-        // console.log('Test ', this.initialData);
+    async _fetchData(query) {
+        try {
+            this.spinner.showSpinner();
+            const json = await this.api.getItemByQuery(`${query}`);
+            this.data = json;
+            console.log('Test ', this.data);
+            this._populateCards(this.data.data);
+        } catch (e) {
+            new Notification().showError('Failed to load data', e);
+            console.log(e);
+        } finally {
+            this.spinner.removeSpinner();
+        }
     }
 
-    async _fetchSearchResults(e) {
+    async _fetchSearchResults() {
         const input = document.getElementById('searchInput');
         const currentResults = document.getElementById('resultsContainer');
         console.log('User input', input.value);
         try {
             this.spinner.showSpinner();
             if (input !== null) {
-                this.data = await this.api.getItemByQuery(input.value);
-                currentResults.innerHTML = '';
-                console.log('Data ', this.data);
-                console.log('results Container', currentResults);
-                currentResults.append(this._populateCards(this.data));
+                this.data = await this.api.getItemByQuery(`${input.value}`);
+                while (currentResults.firstChild) {
+                    currentResults.removeChild(currentResults.firstChild);
+                }
+
+                this._populateCards(this.data.data);
             }
-            // create a page
         } catch (e) {
-            // throw new Error(e);
-            // new Notification().showError('Failed to load data', e);
-            console.log(e);
+            new Notification().showError('Failed to load data', e);
         } finally {
             this.spinner.removeSpinner();
         }
-        e.preventDefault();
-
-        return false;
     }
 }
