@@ -3,7 +3,9 @@
 Single page application written in Javascript available on [https://pdybowski.github.io/news-app/](https://pdybowski.github.io/news-app/). Main features include:
 
 -   [Accuweather-powered](https://www.accuweather.com/) weather page returning weather forecast for location of your choice, including your current location
--   Latest News served by [https://newsapi.org/](https://newsapi.org/) providing latest headlines
+-   Latest News served by [https://newsapi.org/](https://newsapi.org/) providing latest headlines with the possibility of searching for news
+-   Football page with [football api](https://github.com/azharimm/football-standings-api) api allowing user to check current and historic tables of all major football leagues
+-   Government page using [PolishGovernmentApi](https://dane.gov.pl/en) allowing user to view latest articles and search for articles based on user query
 
 ## Installation
 
